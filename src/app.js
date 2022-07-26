@@ -1,3 +1,2 @@
 import "./style.css";
-
-console.log("Test if it works");
+import * as ui from "./modules/ui.js";
