@@ -39,6 +39,10 @@ h3 {
     font-weight: 750;
 }
 
+input, textarea {
+    appearance: none;
+}
+
 
 
 
@@ -118,9 +122,115 @@ li {
 }
 
 .n-task {
-    display: block;
+    display: none;
     background-color: var(--accent-color);
     border-radius: 6px;
+}
+
+.n-task.active {
+    display: block;
+}
+
+
+
+
+/* ----- Tasks ----- */
+.task {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    grid-auto-rows: auto;
+    align-items: center;
+    gap: 5px 15px;
+    padding: 15px;
+    background-color: var(--secondary-color);
+    border-radius: 6px;
+    margin-top: 6px;
+    overflow: hidden;
+}
+
+.task.completed {
+    color: hsl(219, 6%, 48%);
+    fill: hsl(219, 6%, 48%);
+}
+
+.task.completed > .task_title {
+    text-decoration: line-through;
+}
+
+.task:is(.low-priority, .medium-priority, .high-priority)::before {
+    content: "";
+    position: absolute;
+    width: 5px;
+    height: 100%;
+}
+
+.task.low-priority::before {
+    background-color: hsl(212, 100%, 55%);
+}
+
+.task.medium-priority::before {
+    background-color: hsl(41, 100%, 50%);
+}
+
+.task.high-priority::before {
+    background-color: hsl(0, 100%, 57%);
+}
+
+input[type="checkbox"] {
+    border: 2px solid hsl(210, 7%, 58%);
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: white;
+    flex-shrink: 0;
+}
+
+input[type="checkbox"]:checked {
+    background-color: hsl(200, 11%, 22%);
+    color: white;
+    fill: white;
+    border: none;
+}
+
+.task_title {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.task_title svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
+.task_details {
+    grid-area: 2 / 2 / 3 / 3;
+    display: none;
+    font-size: 1.4rem;
+}
+
+.task_details.active {
+    display: block;
+}
+
+.task_actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    opacity: 0;
+    transition: 0.1s opacity ease;
+    fill: hsl(240, 3%, 39%);
+}
+
+.task:hover > .task_actions {
+    opacity: 1;
+}
+
+.task_date {
+    font-weight: 600;
+    font-size: 1.4rem;
 }
 
 

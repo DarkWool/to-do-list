@@ -1,3 +1,6 @@
+import { homeProject } from "./projects.js";
+import { task } from "./tasks.js";
+
 const sidebar = document.getElementsByClassName("sidebar")[0];
 const sidebarItems = sidebar.getElementsByClassName("sidebar_item");
 const newTaskContainer = document.getElementsByClassName("n-task")[0];
@@ -9,6 +12,7 @@ const home = sidebarItems[0].addEventListener("click", switchSidebarTab);
 const today = sidebarItems[1].addEventListener("click", switchSidebarTab);
 const thisWeek = sidebarItems[2].addEventListener("click", switchSidebarTab);
 
+
 function switchSidebarTab(e) {
     // Get sidebar elements which have the 'active' class and remove it
     const activeElements = sidebar.getElementsByClassName("sidebar_item active");
@@ -18,7 +22,17 @@ function switchSidebarTab(e) {
 
     e.currentTarget.classList.add("active");
 
-    switch (e.currentTarget.innerText) {
+    updateProjectWorkspace(e.currentTarget.innerText);
+}
+
+function updateProjectWorkspace(title) {
+    if (workspaceTitle) {
+        workspaceTitle.textContent = title;
+    }
+
+    workspaceContent.innerHTML = "";
+
+    switch (title) {
         case "Home":
             newTaskContainer.classList.add("active");
             break;
