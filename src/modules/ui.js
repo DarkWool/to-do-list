@@ -1,3 +1,4 @@
+import { format, compareAsc, parse, isToday, isThisWeek } from 'date-fns';
 import { homeProject } from "./projects.js";
 import { task } from "./tasks.js";
 
@@ -48,19 +49,44 @@ function updateProjectWorkspace(title) {
             break;
         case "Today":
             newTaskContainer.classList.remove("active");
+            renderTodayTasks();
             break;
         case "This Week":
             newTaskContainer.classList.remove("active");
+            renderWeekTasks();
             break;
     }
 }
 
 function renderTasks() {
     const fragment = document.createDocumentFragment();
-
     homeProject.tasks.forEach((task, index) => {
         const taskNode = createTaskUI(task.title, task.details, task.date, task.priority, task.completed, index);
         fragment.prepend(taskNode);
+    });
+
+    workspaceContent.prepend(fragment);
+}
+
+function renderTodayTasks() {
+    const fragment = document.createDocumentFragment();
+    homeProject.tasks.forEach((task, index) => {
+        if (isToday(task.date)) {
+            const taskNode = createTaskUI(task.title, task.details, task.date, task.priority, task.completed, index);
+            fragment.prepend(taskNode);
+        }
+    });
+
+    workspaceContent.prepend(fragment);
+}
+
+function renderWeekTasks() {
+    const fragment = document.createDocumentFragment();
+    homeProject.tasks.forEach((task, index) => {
+        if (isThisWeek(task.date)) {
+            const taskNode = createTaskUI(task.title, task.details, task.date, task.priority, task.completed, index);
+            fragment.prepend(taskNode);
+        }
     });
 
     workspaceContent.prepend(fragment);
@@ -78,6 +104,8 @@ function createTaskUI(title, details, date, priority, completed, index) {
     const editTaskBtn = document.createElement("button");
     const deleteTaskBtn = document.createElement("button");
     const taskDate = document.createElement("div");
+
+    date = format(date, "E MMM dd, yyyy");
 
     container.classList.add("task");
     taskTitle.classList.add("task_title");
@@ -139,13 +167,25 @@ function createTaskUI(title, details, date, priority, completed, index) {
 // Test data
 homeProject.addTask(task("Terminar modelado",
     "asdasdadsadsa",
-    "date",
+    new Date("2022-07-24 00:00"),
     "high"));
+homeProject.addTask(task("Terminar modelado - 1",
+    `Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptatum expedita at excepturi recusandae labore possimus unde dolorum molestias eligendi odit quibusdam doloremque repudiandae quia earum illum ullam maiores, asperiores pariatur.
+    Sed, saepe ? Facere iure fugiat dolore magni, assumenda ullam dolorum, officiis accusantium dignissimos itaque beatae sed ratione saepe a, non molestias reprehenderit laborum error ? Aperiam neque magni in ea tempore.
+    Eum laudantium maiores, id aperiam, dolore quam, facilis incidunt exercitationem labore dolorem sed non laborum repellendus ab distinctio maxime et vero enim ? Ex, rem hic voluptatum ad quisquam architecto nobis.
+    Ex rerum porro error dolore, doloribus consequuntur, facilis quam quos iure ad tempora labore id explicabo laborum debitis ratione voluptate, nobis eos vero obcaecati quod distinctio eveniet provident.Nihil, doloremque ?
+    Aspernatur reiciendis aliquid rerum aliquam quas! Autem quod mollitia dicta placeat eveniet unde, consequuntur quis repellendus labore saepe cum laudantium dignissimos illo voluptate veritatis quo magnam ut sapiente porro nesciunt.`,
+    new Date("2022-07-13 00:00"),
+    "none"));
 homeProject.addTask(task("Terminar modelado - 2",
     "asdasdadsadsa",
-    "date",
+    new Date("2022-07-11 00:00"),
     "medium"));
-homeProject.addTask(task("Terminar modelado - 4",
+homeProject.addTask(task("Terminar modelado - 3",
     "asdasdadsadsa",
-    "date",
+    new Date("2022-07-20 00:00"),
+    "high"));
+homeProject.addTask(task("Terminar modelado - today",
+    "asdasdadsadsa",
+    new Date("2022-07-26 00:00"),
     "low"));
