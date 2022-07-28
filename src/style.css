@@ -184,6 +184,8 @@ input[type="checkbox"] {
     border-radius: 50%;
     background-color: white;
     flex-shrink: 0;
+    cursor: pointer;
+    transition: background-color 0.2s, border 0.2s ease;
 }
 
 input[type="checkbox"]:checked {

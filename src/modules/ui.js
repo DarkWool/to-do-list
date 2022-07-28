@@ -1,6 +1,6 @@
 import { format, compareAsc, parse, isToday, isThisWeek } from 'date-fns';
 import { homeProject } from "./projects.js";
-import { task } from "./tasks.js";
+import { task, markTaskCompleted } from "./tasks.js";
 
 const sidebar = document.getElementsByClassName("sidebar")[0];
 const sidebarItems = sidebar.getElementsByClassName("sidebar_item");
@@ -40,8 +40,6 @@ function updateProjectWorkspace(title) {
         workspaceTitle.textContent = title;
     }
 
-    workspaceContent.innerHTML = "";
-
     switch (title) {
         case "Home":
             newTaskContainer.classList.add("active");
@@ -59,6 +57,9 @@ function updateProjectWorkspace(title) {
 }
 
 function renderTasks() {
+    // Clean tasks
+    workspaceContent.innerHTML = "";
+
     const fragment = document.createDocumentFragment();
     homeProject.tasks.forEach((task, index) => {
         const taskNode = createTaskUI(task.title, task.details, task.date, task.priority, task.completed, index);
@@ -69,6 +70,9 @@ function renderTasks() {
 }
 
 function renderTodayTasks() {
+    // Clean tasks
+    workspaceContent.innerHTML = "";
+
     const fragment = document.createDocumentFragment();
     homeProject.tasks.forEach((task, index) => {
         if (isToday(task.date)) {
@@ -81,6 +85,9 @@ function renderTodayTasks() {
 }
 
 function renderWeekTasks() {
+    // Clean tasks
+    workspaceContent.innerHTML = "";
+
     const fragment = document.createDocumentFragment();
     homeProject.tasks.forEach((task, index) => {
         if (isThisWeek(task.date)) {
@@ -139,8 +146,10 @@ function createTaskUI(title, details, date, priority, completed, index) {
 
         taskTitle.append(taskDetailsBtn);
         container.append(checkbox, taskTitle, taskDetails, taskActions, taskDate);
+        createNewTaskListeners(checkbox);
     } else {
         container.append(checkbox, taskTitle, taskActions, taskDate);
+        createNewTaskListeners(checkbox);
     }
 
     if (priority) {
@@ -164,6 +173,25 @@ function createTaskUI(title, details, date, priority, completed, index) {
     return container;
 }
 
+function createNewTaskListeners(checkbox) {
+    checkbox.addEventListener("input", markTaskCompletedUI);
+}
+
+function markTaskCompletedUI(e) {
+    const taskNode = e.currentTarget.closest("div.task");
+    const taskIndex = taskNode.dataset.taskIndex;
+    taskNode.classList.toggle("completed");
+
+    markTaskCompleted(taskIndex);
+}
+
+
+
+
+
+
+
+
 // Test data
 homeProject.addTask(task("Terminar modelado",
     "asdasdadsadsa",
@@ -182,7 +210,7 @@ homeProject.addTask(task("Terminar modelado - 2",
     new Date("2022-07-11 00:00"),
     "medium"));
 homeProject.addTask(task("Terminar modelado - 3",
-    "asdasdadsadsa",
+    null,
     new Date("2022-07-20 00:00"),
     "high"));
 homeProject.addTask(task("Terminar modelado - today",

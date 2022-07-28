@@ -1,3 +1,5 @@
+import { homeProject } from "./projects";
+
 // Factory function to create new tasks
 function task(title, details, date, priority, completed = false) {
     return {
@@ -17,6 +19,15 @@ function task(title, details, date, priority, completed = false) {
     }
 }
 
+function markTaskCompleted(index) {
+    if (homeProject.tasks[index].completed === true) {
+        homeProject.tasks[index].completed = false;
+    } else {
+        homeProject.tasks[index].completed = true;
+    }
+}
+
 export {
-    task
+    task,
+    markTaskCompleted
 };
