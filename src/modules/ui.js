@@ -13,6 +13,8 @@ const home = sidebarItems[0].addEventListener("click", switchSidebarTab);
 const today = sidebarItems[1].addEventListener("click", switchSidebarTab);
 const thisWeek = sidebarItems[2].addEventListener("click", switchSidebarTab);
 
+let currentProject = "Home";
+
 const icons = {
     details: `<svg width="20" height="20" viewBox="0 0 24 24">
         <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg>`,
@@ -32,6 +34,7 @@ function switchSidebarTab(e) {
 
     e.currentTarget.classList.add("active");
 
+    currentProject = e.currentTarget.innerText;
     updateProjectWorkspace(e.currentTarget.innerText);
 }
 
@@ -40,20 +43,17 @@ function updateProjectWorkspace(title) {
         workspaceTitle.textContent = title;
     }
 
-    switch (title) {
-        case "Home":
-            newTaskContainer.classList.add("active");
-            renderTasks();
-            break;
-        case "Today":
-            newTaskContainer.classList.remove("active");
-            renderTodayTasks();
-            break;
-        case "This Week":
-            newTaskContainer.classList.remove("active");
-            renderWeekTasks();
-            break;
+    if (currentProject === "Today" || currentProject === "This Week") {
+        newTaskContainer.classList.remove("active");
+    } else {
+        newTaskContainer.classList.add("active");
     }
+
+    renderTasks();
+}
+
+function cleanTasks() {
+    workspaceContent.innerHTML = "";
 }
 
 function renderTasks() {
@@ -61,40 +61,30 @@ function renderTasks() {
     workspaceContent.innerHTML = "";
 
     const fragment = document.createDocumentFragment();
-    homeProject.tasks.forEach((task, index) => {
-        const taskNode = createTaskUI(task.title, task.details, task.date, task.priority, task.completed, index);
-        fragment.prepend(taskNode);
-    });
-
-    workspaceContent.prepend(fragment);
-}
-
-function renderTodayTasks() {
-    // Clean tasks
-    workspaceContent.innerHTML = "";
-
-    const fragment = document.createDocumentFragment();
-    homeProject.tasks.forEach((task, index) => {
-        if (isToday(task.date)) {
-            const taskNode = createTaskUI(task.title, task.details, task.date, task.priority, task.completed, index);
-            fragment.prepend(taskNode);
-        }
-    });
-
-    workspaceContent.prepend(fragment);
-}
-
-function renderWeekTasks() {
-    // Clean tasks
-    workspaceContent.innerHTML = "";
-
-    const fragment = document.createDocumentFragment();
-    homeProject.tasks.forEach((task, index) => {
-        if (isThisWeek(task.date)) {
-            const taskNode = createTaskUI(task.title, task.details, task.date, task.priority, task.completed, index);
-            fragment.prepend(taskNode);
-        }
-    });
+    switch (currentProject) {
+        case "Home":
+            homeProject.tasks.forEach((task, index) => {
+                const taskNode = createTaskUI(task.title, task.details, task.date, task.priority, task.completed, index);
+                fragment.prepend(taskNode);
+            });
+            break;
+        case "Today":
+            homeProject.tasks.forEach((task, index) => {
+                if (isToday(task.date)) {
+                    const taskNode = createTaskUI(task.title, task.details, task.date, task.priority, task.completed, index);
+                    fragment.prepend(taskNode);
+                }
+            });
+            break;
+        case "This Week":
+            homeProject.tasks.forEach((task, index) => {
+                if (isThisWeek(task.date)) {
+                    const taskNode = createTaskUI(task.title, task.details, task.date, task.priority, task.completed, index);
+                    fragment.prepend(taskNode);
+                }
+            });
+            break;
+    }
 
     workspaceContent.prepend(fragment);
 }
@@ -146,10 +136,10 @@ function createTaskUI(title, details, date, priority, completed, index) {
 
         taskTitle.append(taskDetailsBtn);
         container.append(checkbox, taskTitle, taskDetails, taskActions, taskDate);
-        createNewTaskListeners(checkbox);
+        createNewTaskListeners(checkbox, taskActions);
     } else {
         container.append(checkbox, taskTitle, taskActions, taskDate);
-        createNewTaskListeners(checkbox);
+        createNewTaskListeners(checkbox, taskActions);
     }
 
     if (priority) {
@@ -173,8 +163,11 @@ function createTaskUI(title, details, date, priority, completed, index) {
     return container;
 }
 
-function createNewTaskListeners(checkbox) {
+function createNewTaskListeners(checkbox, taskActions) {
     checkbox.addEventListener("input", markTaskCompletedUI);
+    taskActions.addEventListener("click", (e) => {
+        deleteTask(e.currentTarget);
+    });
 }
 
 function markTaskCompletedUI(e) {
@@ -185,7 +178,16 @@ function markTaskCompletedUI(e) {
     markTaskCompleted(taskIndex);
 }
 
+function deleteTask(target) {
+    // Delete task obj from project
+    const taskNode = target.closest("div.task");
+    const taskIndex = taskNode.dataset.taskIndex;
+    homeProject.deleteTask(taskIndex);
 
+    cleanTasks();
+    renderTasks();
+    console.log(homeProject);
+}
 
 
 
@@ -215,5 +217,5 @@ homeProject.addTask(task("Terminar modelado - 3",
     "high"));
 homeProject.addTask(task("Terminar modelado - today",
     "asdasdadsadsa",
-    new Date("2022-07-26 00:00"),
+    new Date("2022-08-06 00:00"),
     "low"));
