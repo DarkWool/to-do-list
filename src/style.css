@@ -201,12 +201,6 @@ input[type="checkbox"]:checked {
     gap: 5px;
 }
 
-.task_title svg {
-    display: block;
-    width: 20px;
-    height: 20px;
-}
-
 .task_details {
     grid-area: 2 / 2 / 3 / 3;
     display: none;
@@ -277,6 +271,17 @@ button {
     font-weight: 600;
     color: white;
     fill: white;
+}
+
+.task_details-btn {
+    display: block;
+    width: 20px;
+    height: 20px;
+    transition: 0.2s all ease;
+}
+
+.task_details-btn.rotate {
+    transform: rotate(-180deg);
 }
 
 

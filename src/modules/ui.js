@@ -129,6 +129,7 @@ function createTaskUI(title, details, date, priority, completed, index) {
         const taskDetailsBtn = document.createElement("button");
 
         taskDetails.classList.add("task_details");
+        taskDetailsBtn.classList.add("task_details-btn");
         taskDetails.textContent = details;
 
         taskDetailsBtn.type = "button";
@@ -136,7 +137,7 @@ function createTaskUI(title, details, date, priority, completed, index) {
 
         taskTitle.append(taskDetailsBtn);
         container.append(checkbox, taskTitle, taskDetails, taskActions, taskDate);
-        createNewTaskListeners(checkbox, taskActions);
+        createNewTaskListeners(checkbox, taskActions, taskDetailsBtn);
     } else {
         container.append(checkbox, taskTitle, taskActions, taskDate);
         createNewTaskListeners(checkbox, taskActions);
@@ -163,11 +164,13 @@ function createTaskUI(title, details, date, priority, completed, index) {
     return container;
 }
 
-function createNewTaskListeners(checkbox, taskActions) {
+function createNewTaskListeners(checkbox, taskActions, detailsBtn) {
     checkbox.addEventListener("input", markTaskCompletedUI);
     taskActions.addEventListener("click", (e) => {
         deleteTask(e.currentTarget);
     });
+
+    if (detailsBtn) detailsBtn.addEventListener("click", showTaskDetails);
 }
 
 function markTaskCompletedUI(e) {
@@ -178,6 +181,16 @@ function markTaskCompletedUI(e) {
     markTaskCompleted(taskIndex);
 }
 
+function showTaskDetails(e) {
+    const taskNode = e.currentTarget.closest("div.task");
+    const taskDetailsNode = taskNode.getElementsByClassName("task_details")[0];
+
+    if (taskDetailsNode) {
+        taskDetailsNode.classList.toggle("active");
+        e.currentTarget.classList.toggle("rotate");
+    }
+}
+
 function deleteTask(target) {
     // Delete task obj from project
     const taskNode = target.closest("div.task");
@@ -186,7 +199,6 @@ function deleteTask(target) {
 
     cleanTasks();
     renderTasks();
-    console.log(homeProject);
 }
 
 
