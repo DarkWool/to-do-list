@@ -43,6 +43,19 @@ input, textarea {
     appearance: none;
 }
 
+select {
+    background-color: white;
+}
+
+select, input[type="date"] {
+    cursor: pointer;
+    transition: 0.2s background-color ease;
+}
+
+select:hover, input[type="date"]:hover {
+    background-color: hsl(224, 100%, 98%);
+}
+
 
 
 
@@ -232,6 +245,107 @@ input[type="checkbox"]:checked {
 
 
 
+/* ----- Edit task modal ----- */
+.task-modal {
+    display: none;
+    position: absolute;
+    width: 50ch;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    overflow: hidden;
+    border-radius: 6px;
+    opacity: 0;
+    transition: 0.1s opacity ease;
+}
+
+.task-modal.active {
+    display: block;
+    opacity: 1;
+}
+
+.task-modal_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.8rem;
+    background-color: hsl(0, 0%, 5%);
+    color: white;
+}
+
+.task-modal_body {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    background-color: white;
+}
+
+.task-modal_header,
+.task-modal_body {
+    padding: 25px;
+}
+
+.task-modal_w {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-weight: 600;
+}
+
+.task-modal_w > :is(input, textarea, select) {
+    padding: 10px 10px;
+    border: 1px solid hsl(216, 14%, 75%);
+    border-radius: 4px;
+}
+
+.invalid-input {
+    display: none;
+    font-size: 1.2rem;
+}
+
+.invalid-input.active {
+    display: block;
+}
+
+#taskTitle:invalid + .invalid-input {
+    display: block;
+}
+
+.task-modal_submit {
+    cursor: pointer;
+    padding: 15px 10px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    background-color: hsl(0, 0%, 12%);
+    color: white;
+}
+
+
+
+
+/* ----- Overlay ----- */
+.dark-overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: 0.1s opacity ease;
+    background-color: rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+}
+
+.dark-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+
+
+
 /* ----- Buttons ----- */
 button {
     appearance: none;
@@ -273,6 +387,10 @@ button {
     fill: white;
 }
 
+.close-modal-btn {
+    fill: hsl(0, 97%, 56%);
+}
+
 .task_details-btn {
     display: block;
     width: 20px;
@@ -294,4 +412,16 @@ button {
 
 .icon-container > svg {
     display: block;
+}
+
+.span-2-col {
+    grid-column: span 2;
+}
+
+.danger-color {
+    color: hsl(0, 100%, 57%);
+}
+
+.resize-vertical {
+    resize: vertical;
 }

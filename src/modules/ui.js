@@ -8,10 +8,22 @@ const sidebarItems = sidebar.getElementsByClassName("sidebar_item");
 const workspaceTitle = document.getElementsByClassName("workspace_title")[0];
 const workspaceContent = document.getElementById("tasks");
 const newTaskContainer = document.getElementsByClassName("n-task")[0];
+const newTaskBtn = document.getElementsByClassName("n-task_btn")[0];
+
+const taskModal = document.getElementsByClassName("task-modal")[0];
+const taskForm = document.getElementById("newTaskForm");
+const formCloseBtn = taskModal.getElementsByClassName("close-modal-btn")[0];
+const darkOverlay = document.getElementsByClassName("dark-overlay")[0];
+
 
 const home = sidebarItems[0].addEventListener("click", switchSidebarTab);
 const today = sidebarItems[1].addEventListener("click", switchSidebarTab);
 const thisWeek = sidebarItems[2].addEventListener("click", switchSidebarTab);
+newTaskBtn.addEventListener("click", showNewTaskForm);
+taskForm.addEventListener("submit", getNewTaskData);
+formCloseBtn.addEventListener("click", hideTaskForm);
+darkOverlay.addEventListener("click", hideTaskForm);
+
 
 let currentProject = "Home";
 
@@ -202,6 +214,41 @@ function deleteTask(target) {
 }
 
 
+function showNewTaskForm() {
+    if (taskModal) taskModal.classList.add("active");
+    if (darkOverlay) darkOverlay.classList.add("active");
+}
+
+function hideTaskForm() {
+    if (taskModal) taskModal.classList.remove("active");
+    if (darkOverlay) darkOverlay.classList.remove("active");
+}
+
+function getNewTaskData(e) {
+    // Do not let the form refresh the page
+    e.preventDefault();
+
+    const inputs = e.target.elements;
+    const titleInput = inputs["taskTitle"];
+    if (titleInput.value === "") return;
+
+    const data = new FormData(e.currentTarget);
+    const title = data.get("taskTitle");
+    const details = data.get("taskDetails");
+    const date = new Date(`${data.get("taskDate")} 00:00`);
+    const priority = data.get("taskPriority");
+
+    composeNewTask(title, details, date, priority);
+}
+
+function composeNewTask(title, details, date, priority) {
+    const newTask = task(title, details, date, priority);
+    const newTaskIndex = homeProject.addTask(newTask);
+    
+    hideTaskForm();
+    
+    workspaceContent.prepend(createTaskUI(title, details, date, priority, undefined, newTaskIndex));
+}
 
 
 
