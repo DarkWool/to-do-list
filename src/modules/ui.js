@@ -2,6 +2,9 @@ import { format, compareAsc, parse, isToday, isThisWeek } from 'date-fns';
 import { homeProject } from "./projects.js";
 import { task, markTaskCompleted } from "./tasks.js";
 
+let currentProject = "Home";
+let editingTaskIndex;
+
 const sidebar = document.getElementsByClassName("sidebar")[0];
 const sidebarItems = sidebar.getElementsByClassName("sidebar_item");
 
@@ -10,22 +13,34 @@ const workspaceContent = document.getElementById("tasks");
 const newTaskContainer = document.getElementsByClassName("n-task")[0];
 const newTaskBtn = document.getElementsByClassName("n-task_btn")[0];
 
-const taskModal = document.getElementsByClassName("task-modal")[0];
+const taskModals = document.getElementsByClassName("task-modal");
+const newTaskModal = taskModals[0];
+const editTaskModal = taskModals[1];
 const taskForm = document.getElementById("newTaskForm");
-const formCloseBtn = taskModal.getElementsByClassName("close-modal-btn")[0];
+const editTaskForm = document.getElementById("editTaskForm");
 const darkOverlay = document.getElementsByClassName("dark-overlay")[0];
 
 
 const home = sidebarItems[0].addEventListener("click", switchSidebarTab);
 const today = sidebarItems[1].addEventListener("click", switchSidebarTab);
 const thisWeek = sidebarItems[2].addEventListener("click", switchSidebarTab);
-newTaskBtn.addEventListener("click", showNewTaskForm);
+newTaskBtn.addEventListener("click", () => openModal(newTaskModal));
 taskForm.addEventListener("submit", getNewTaskData);
-formCloseBtn.addEventListener("click", hideTaskForm);
-darkOverlay.addEventListener("click", hideTaskForm);
+editTaskForm.addEventListener("submit", editTask);
+darkOverlay.addEventListener("click", () => {
+    for (let modal of taskModals) {
+        closeModal(modal);
+    }
+});
 
+for (let modal of taskModals) {
+    const closeBtn = modal.getElementsByClassName("close-modal-btn")[0];
+    closeBtn.addEventListener("click", (e) => {
+        const modal = e.currentTarget.closest(".task-modal");
+        closeModal(modal);
+    });
+}
 
-let currentProject = "Home";
 
 const icons = {
     details: `<svg width="20" height="20" viewBox="0 0 24 24">
@@ -100,7 +115,6 @@ function renderTasks() {
 
     workspaceContent.prepend(fragment);
 }
-
 
 
 
@@ -179,7 +193,15 @@ function createTaskUI(title, details, date, priority, completed, index) {
 function createNewTaskListeners(checkbox, taskActions, detailsBtn) {
     checkbox.addEventListener("input", markTaskCompletedUI);
     taskActions.addEventListener("click", (e) => {
-        deleteTask(e.currentTarget);
+        const button = e.target.closest("button");
+        if (button === null) return; 
+
+        if (button.dataset.taskAction === "edit") {
+            openModal(editTaskModal);
+            setEditFormValues(button);
+        } else if (button.dataset.taskAction === "delete") {
+            deleteTask(e.currentTarget);
+        }
     });
 
     if (detailsBtn) detailsBtn.addEventListener("click", showTaskDetails);
@@ -214,14 +236,14 @@ function deleteTask(target) {
 }
 
 
-function showNewTaskForm() {
-    if (taskModal) taskModal.classList.add("active");
-    if (darkOverlay) darkOverlay.classList.add("active");
+function openModal(modal) {
+    if (modal) modal.classList.add("active");
+    darkOverlay.classList.add("active");
 }
 
-function hideTaskForm() {
-    if (taskModal) taskModal.classList.remove("active");
-    if (darkOverlay) darkOverlay.classList.remove("active");
+function closeModal(modal) {
+    if (modal) modal.classList.remove("active");
+    darkOverlay.classList.remove("active");
 }
 
 function getNewTaskData(e) {
@@ -245,10 +267,46 @@ function composeNewTask(title, details, date, priority) {
     const newTask = task(title, details, date, priority);
     const newTaskIndex = homeProject.addTask(newTask);
     
-    hideTaskForm();
+    closeModal();
     
     workspaceContent.prepend(createTaskUI(title, details, date, priority, undefined, newTaskIndex));
 }
+
+
+function setEditFormValues(target) {
+    // const formElements = editF
+    const taskNode = target.closest("div.task");
+    editingTaskIndex = taskNode.dataset.taskIndex;
+    
+    const currTask = homeProject.tasks[editingTaskIndex];
+    const formFields = editTaskForm.elements;
+    formFields["taskTitle"].value = currTask.title;
+    formFields["taskDetails"].value = currTask.details;
+    formFields["taskPriority"].value = currTask.priority;
+
+    const date = format(currTask.date, "yyyy-MM-dd");
+    formFields["taskDate"].value = date;
+}
+
+function editTask(e) {
+    e.preventDefault();
+
+    const data = new FormData(e.currentTarget);
+    const title = data.get("taskTitle");
+    const details = data.get("taskDetails");
+    const date = new Date(`${data.get("taskDate")} 00:00`);
+    const priority = data.get("taskPriority");
+
+    const currTask = homeProject.tasks[editingTaskIndex];
+    currTask.title = title;
+    currTask.details = details;
+    currTask.priority = priority;
+    currTask.date = date;
+
+    renderTasks();
+    closeModal(editTaskModal);
+}
+
 
 
 
@@ -259,10 +317,7 @@ homeProject.addTask(task("Terminar modelado",
     new Date("2022-07-24 00:00"),
     "high"));
 homeProject.addTask(task("Terminar modelado - 1",
-    `Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptatum expedita at excepturi recusandae labore possimus unde dolorum molestias eligendi odit quibusdam doloremque repudiandae quia earum illum ullam maiores, asperiores pariatur.
-    Sed, saepe ? Facere iure fugiat dolore magni, assumenda ullam dolorum, officiis accusantium dignissimos itaque beatae sed ratione saepe a, non molestias reprehenderit laborum error ? Aperiam neque magni in ea tempore.
-    Eum laudantium maiores, id aperiam, dolore quam, facilis incidunt exercitationem labore dolorem sed non laborum repellendus ab distinctio maxime et vero enim ? Ex, rem hic voluptatum ad quisquam architecto nobis.
-    Ex rerum porro error dolore, doloribus consequuntur, facilis quam quos iure ad tempora labore id explicabo laborum debitis ratione voluptate, nobis eos vero obcaecati quod distinctio eveniet provident.Nihil, doloremque ?
+    `Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptatum expedita at excepturi recusandae labore possimus unde dolorum molestias eligendi odit quibusdam doloremque repudiandae quia earum illum ullam maiores, asperiores pariatur. Sed, saepe ? Facere iure fugiat dolore magni, assumenda ullam dolorum, officiis accusantium dignissimos itaque beatae sed ratione saepe a, non molestias reprehenderit laborum error ? Aperiam neque magni in ea tempore. Eum laudantium maiores, id aperiam, dolore quam, facilis incidunt exercitationem labore dolorem sed non laborum repellendus ab distinctio maxime et vero enim ? Ex, rem hic voluptatum ad quisquam architecto nobis. Ex rerum porro error dolore, doloribus consequuntur, facilis quam quos iure ad tempora labore id explicabo laborum debitis ratione voluptate, nobis eos vero obcaecati quod distinctio eveniet provident.Nihil, doloremque ? 
     Aspernatur reiciendis aliquid rerum aliquam quas! Autem quod mollitia dicta placeat eveniet unde, consequuntur quis repellendus labore saepe cum laudantium dignissimos illo voluptate veritatis quo magnam ut sapiente porro nesciunt.`,
     new Date("2022-07-13 00:00"),
     "none"));

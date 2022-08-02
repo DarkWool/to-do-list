@@ -247,6 +247,7 @@ input[type="checkbox"]:checked {
 
 /* ----- Edit task modal ----- */
 .task-modal {
+    /* visibility: hidden; */
     display: none;
     position: absolute;
     width: 50ch;
@@ -262,6 +263,7 @@ input[type="checkbox"]:checked {
 
 .task-modal.active {
     display: block;
+    /* visibility: visible; */
     opacity: 1;
 }
 
