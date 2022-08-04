@@ -1,5 +1,5 @@
 import { format, compareAsc, parse, isToday, isThisWeek } from 'date-fns';
-import { homeProject } from "./projects.js";
+import { homeProject, createNewProject } from "./projects.js";
 import { task, markTaskCompleted } from "./tasks.js";
 
 let currentProject = "Home";
@@ -7,6 +7,9 @@ let editingTaskIndex;
 
 const sidebar = document.getElementsByClassName("sidebar")[0];
 const sidebarItems = sidebar.getElementsByClassName("sidebar_item");
+const sidebarUserProjects = document.getElementsByClassName("sidebar_my-projects")[0];
+const newProjectBtn = document.getElementById("newProject");
+const newProjectForm = document.getElementsByClassName("n-project_form")[0];
 
 const workspaceTitle = document.getElementsByClassName("workspace_title")[0];
 const workspaceContent = document.getElementById("tasks");
@@ -24,6 +27,16 @@ const darkOverlay = document.getElementsByClassName("dark-overlay")[0];
 const home = sidebarItems[0].addEventListener("click", switchSidebarTab);
 const today = sidebarItems[1].addEventListener("click", switchSidebarTab);
 const thisWeek = sidebarItems[2].addEventListener("click", switchSidebarTab);
+newProjectBtn.addEventListener("click", showNewProjectForm);
+newProjectForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const title = e.currentTarget.elements[0].value;
+
+    e.currentTarget.reset();
+    hideNewProjectForm();
+
+    composeNewProject(title);
+});
 newTaskBtn.addEventListener("click", () => openModal(newTaskModal));
 taskForm.addEventListener("submit", getNewTaskData);
 editTaskForm.addEventListener("submit", editTask);
@@ -77,6 +90,53 @@ function updateProjectWorkspace(title) {
     }
 
     renderTasks();
+}
+
+function showNewProjectForm() {
+    newProjectBtn.classList.remove("active");
+    newProjectForm.classList.add("active");
+
+    document.addEventListener("click", detectClickOutsideForm); //not
+    focusNode(newProjectForm.firstElementChild);
+}
+
+function hideNewProjectForm() {
+    newProjectBtn.classList.add("active");
+    newProjectForm.classList.remove("active");
+
+    document.removeEventListener("click", detectClickOutsideForm); //not
+}
+
+function detectClickOutsideForm(e) {
+    if (e.target.closest(".sidebar_bottom")) return;
+
+    hideNewProjectForm();
+}
+
+function focusNode(node) {
+    node.focus();
+}
+
+function composeNewProject(title) {
+    const projectIndex = createNewProject(title);
+    const projectUI = createProjectUI(title, projectIndex);
+    sidebarUserProjects.prepend(projectUI);
+}
+
+function createProjectUI(title, index) {
+    const item = document.createElement("li");
+    const content = `<span class="icon-container">
+                                <svg style="width:20px;height:20px" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path
+                                        d="m3.3 15.4c.717 0 1.3.583 1.3 1.3s-.583 1.3-1.3 1.3-1.3-.583-1.3-1.3.583-1.3 1.3-1.3zm2.7 1.85c0-.414.336-.75.75-.75h14.5c.414 0 .75.336.75.75s-.336.75-.75.75h-14.5c-.414 0-.75-.336-.75-.75zm-2.7-6.55c.717 0 1.3.583 1.3 1.3s-.583 1.3-1.3 1.3-1.3-.583-1.3-1.3.583-1.3 1.3-1.3zm2.7 1.3c0-.414.336-.75.75-.75h14.5c.414 0 .75.336.75.75s-.336.75-.75.75h-14.5c-.414 0-.75-.336-.75-.75zm-2.7-6c.717 0 1.3.583 1.3 1.3s-.583 1.3-1.3 1.3-1.3-.583-1.3-1.3.583-1.3 1.3-1.3zm2.7.75c0-.414.336-.75.75-.75h14.5c.414 0 .75.336.75.75s-.336.75-.75.75h-14.5c-.414 0-.75-.336-.75-.75z"
+                                        fill-rule="nonzero" />
+                                </svg>
+                            </span>`;
+    item.textContent = title;
+    item.classList.add("sidebar_item");
+    item.insertAdjacentHTML("afterbegin", content);
+
+    return item;
 }
 
 function cleanTasks() {
@@ -235,7 +295,6 @@ function deleteTask(target) {
     renderTasks();
 }
 
-
 function openModal(modal) {
     if (modal) modal.classList.add("active");
     darkOverlay.classList.add("active");
@@ -271,7 +330,6 @@ function composeNewTask(title, details, date, priority) {
     
     workspaceContent.prepend(createTaskUI(title, details, date, priority, undefined, newTaskIndex));
 }
-
 
 function setEditFormValues(target) {
     // const formElements = editF
@@ -331,5 +389,10 @@ homeProject.addTask(task("Terminar modelado - 3",
     "high"));
 homeProject.addTask(task("Terminar modelado - today",
     "asdasdadsadsa",
-    new Date("2022-08-06 00:00"),
+    new Date("2022-08-04 00:00"),
     "low"));
+
+export {
+    renderTasks,
+    currentProject
+};

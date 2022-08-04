@@ -1,5 +1,6 @@
 const projects = [];
 const homeProject = project("Home");
+projects.push(homeProject);
 
 function project(title) {
     const tasks = [];
@@ -14,6 +15,12 @@ function project(title) {
     }
 }
 
+function createNewProject(title) {
+    const newProject = project(title);
+    return projects.push(newProject) - 1;
+}
+
 export {
-    homeProject
+    homeProject,
+    createNewProject,
 };
