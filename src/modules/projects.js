@@ -23,4 +23,5 @@ function createNewProject(title) {
 export {
     homeProject,
     createNewProject,
+    projects
 };
