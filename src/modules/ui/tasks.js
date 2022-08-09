@@ -1,4 +1,4 @@
-import { format, isToday, isThisWeek } from "date-fns";
+import { format, isToday, isThisWeek, isValid } from "date-fns";
 import { homeProject, projects } from "../projects.js";
 import { task, markTaskCompleted } from "../tasks.js";
 import { activeTab } from "./projects.js";
@@ -64,7 +64,10 @@ function createTaskUI(task, index, projectIndex) {
     const deleteTaskBtn = document.createElement("button");
     const taskDate = document.createElement("div");
 
-    const formattedDate = format(task.date, "E MMM dd, yyyy");
+    let formattedDate;
+    if (task.date !== null) {
+        formattedDate = format(task.date, "E MMM dd, yyyy");
+    }
 
     container.classList.add("task");
     taskTitle.classList.add("task_title");
@@ -209,22 +212,27 @@ function getNewTaskData(e) {
     const data = new FormData(e.currentTarget);
     const title = data.get("f-nTaskTitle");
     const details = data.get("f-nTaskDetails");
-    const date = new Date(`${data.get("f-nTaskDate")} 00:00`);
     const priority = data.get("f-nTaskPriority");
+
+    let date = new Date(`${data.get("f-nTaskDate")} 00:00`);
+    if (isValid(date) === false) date = null;
 
     composeNewTask(title, details, date, priority);
 }
 
 function setEditFormValues() {
     let currTask = projects[currTaskInfo.project].tasks[currTaskInfo.index];
+    editTaskForm.reset();
 
     const formFields = editTaskForm.elements;
     formFields["f-eTaskTitle"].value = currTask.title;
     formFields["f-eTaskDetails"].value = currTask.details;
     formFields["f-eTaskPriority"].value = currTask.priority;
 
-    const date = format(currTask.date, "yyyy-MM-dd");
-    formFields["f-eTaskDate"].value = date;
+    if (currTask.date !== null) {
+        let date = format(currTask.date, "yyyy-MM-dd");
+        formFields["f-eTaskDate"].value = date;
+    }
 }
 
 function editTask(e) {
@@ -233,14 +241,20 @@ function editTask(e) {
     const data = new FormData(e.currentTarget);
     const title = data.get("f-eTaskTitle");
     const details = data.get("f-eTaskDetails");
-    const date = new Date(`${data.get("f-eTaskDate")} 00:00`);
     const priority = data.get("f-eTaskPriority");
+    let date = new Date(`${data.get("f-eTaskDate")} 00:00`);
 
     let currTask = projects[currTaskInfo.project].tasks[currTaskInfo.index];
     currTask.title = title;
     currTask.details = details;
     currTask.priority = priority;
-    currTask.date = date;
+
+    // If the date is valid change the value in the task object
+    if (isValid(date) === true) {
+        currTask.date = date;
+    } else {
+        currTask.date = null;
+    }
 
     renderTasks();
     closeModal(editTaskModal);
@@ -269,7 +283,6 @@ function renderTasks() {
             break;
         case "This Week":
             projects.forEach((project, projectIndex) => {
-                console.log(projectIndex);
                 project.tasks.forEach((task, index) => {
                     if (isThisWeek(task.date)) {
                         const taskNode = createTaskUI(task, index, projectIndex);
