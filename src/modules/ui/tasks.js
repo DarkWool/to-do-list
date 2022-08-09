@@ -203,14 +203,14 @@ function getNewTaskData(e) {
     e.preventDefault();
 
     const inputs = e.target.elements;
-    const titleInput = inputs["taskTitle"];
+    const titleInput = inputs["f-nTaskTitle"];
     if (titleInput.value === "") return;
 
     const data = new FormData(e.currentTarget);
-    const title = data.get("taskTitle");
-    const details = data.get("taskDetails");
-    const date = new Date(`${data.get("taskDate")} 00:00`);
-    const priority = data.get("taskPriority");
+    const title = data.get("f-nTaskTitle");
+    const details = data.get("f-nTaskDetails");
+    const date = new Date(`${data.get("f-nTaskDate")} 00:00`);
+    const priority = data.get("f-nTaskPriority");
 
     composeNewTask(title, details, date, priority);
 }
@@ -219,22 +219,22 @@ function setEditFormValues() {
     let currTask = projects[currTaskInfo.project].tasks[currTaskInfo.index];
 
     const formFields = editTaskForm.elements;
-    formFields["taskTitle"].value = currTask.title;
-    formFields["taskDetails"].value = currTask.details;
-    formFields["taskPriority"].value = currTask.priority;
+    formFields["f-eTaskTitle"].value = currTask.title;
+    formFields["f-eTaskDetails"].value = currTask.details;
+    formFields["f-eTaskPriority"].value = currTask.priority;
 
     const date = format(currTask.date, "yyyy-MM-dd");
-    formFields["taskDate"].value = date;
+    formFields["f-eTaskDate"].value = date;
 }
 
 function editTask(e) {
     e.preventDefault();
 
     const data = new FormData(e.currentTarget);
-    const title = data.get("taskTitle");
-    const details = data.get("taskDetails");
-    const date = new Date(`${data.get("taskDate")} 00:00`);
-    const priority = data.get("taskPriority");
+    const title = data.get("f-eTaskTitle");
+    const details = data.get("f-eTaskDetails");
+    const date = new Date(`${data.get("f-eTaskDate")} 00:00`);
+    const priority = data.get("f-eTaskPriority");
 
     let currTask = projects[currTaskInfo.project].tasks[currTaskInfo.index];
     currTask.title = title;
