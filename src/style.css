@@ -137,7 +137,7 @@ li {
 
 .n-project_btn {
     fill: white;
-    background-color: #0b74eb;
+    background-color: hsl(212, 91%, 48%);
     padding: 5px;
 }
 
@@ -176,7 +176,7 @@ li {
 .task {
     position: relative;
     display: grid;
-    grid-template-columns: auto 1fr auto auto;
+    grid-template-columns: auto 1fr auto 120px;
     grid-auto-rows: auto;
     align-items: center;
     gap: 5px 15px;
@@ -220,16 +220,19 @@ input[type="checkbox"] {
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background-color: white;
     flex-shrink: 0;
+    background-color: white;
     cursor: pointer;
-    transition: background-color 0.2s, border 0.2s ease;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: background 0.2s, border 0.2s ease;
+    /* background-size: 60%; */
 }
 
 input[type="checkbox"]:checked {
     background-color: hsl(200, 11%, 22%);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='m 10.164913,17.526668 -5.505259,-5.283825 1.7072418,-1.755566 3.7655972,3.5931 7.468802,-7.607045 1.739051,1.7231458 z'/%3E%3C/svg%3E");
     color: white;
-    fill: white;
     border: none;
 }
 
@@ -264,7 +267,8 @@ input[type="checkbox"]:checked {
 
 .task_date {
     font-weight: 600;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
+    text-align: right;
 }
 
 
