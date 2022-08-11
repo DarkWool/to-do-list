@@ -64,11 +64,6 @@ function createTaskUI(task, index, projectIndex) {
     const deleteTaskBtn = document.createElement("button");
     const taskDate = document.createElement("div");
 
-    let formattedDate;
-    if (task.date !== null) {
-        formattedDate = format(task.date, "E MMM dd, yyyy");
-    }
-
     container.classList.add("task");
     taskTitle.classList.add("task_title");
     taskActions.classList.add("task_actions");
@@ -79,9 +74,14 @@ function createTaskUI(task, index, projectIndex) {
     deleteTaskBtn.type = "button";
 
     taskTitle.textContent = task.title;
-    taskDate.textContent = formattedDate;
     editTaskBtn.innerHTML = icons.edit;
     deleteTaskBtn.innerHTML = icons.delete;
+
+    if (task.date !== null) {
+        taskDate.textContent = format(task.date, "E MMM dd, yyyy");
+    } else {
+        taskDate.textContent = "No Date";
+    }
 
     container.dataset.taskIndex = index;
     editTaskBtn.dataset.taskAction = "edit";
