@@ -407,6 +407,16 @@ button {
     display: flex;
 }
 
+.sidebar_item-btn {
+    opacity: 0;
+    transition: 0.1s opacity ease;
+    fill: black;
+}
+
+.sidebar_item:hover > .sidebar_item-btn {
+    opacity: 1;
+}
+
 .n-task_btn {
     width: 100%;
     display: flex;
