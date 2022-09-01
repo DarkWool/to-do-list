@@ -1,6 +1,6 @@
 import { format, isToday, isThisWeek, isValid } from "date-fns";
 import { homeProject, projects } from "../projects.js";
-import { task, markTaskCompleted } from "../tasks.js";
+import { task } from "../tasks.js";
 import { activeTab } from "./projects.js";
 
 const currTaskInfo = {
@@ -91,7 +91,7 @@ function composeNewTask(title, details, date, priority) {
     tasksContainer.prepend(createTaskUI(newTask, newTaskIndex));
 }
 
-function createTaskUI(task, index, projectIndex) {
+function createTaskUI(task, taskIndex, projectIndex) {
     const container = document.createElement("div");
     const checkbox = document.createElement("input");
     const taskTitle = document.createElement("div");
@@ -121,13 +121,9 @@ function createTaskUI(task, index, projectIndex) {
         taskDate.textContent = "No Date";
     }
 
-    container.dataset.taskIndex = index;
     editTaskBtn.dataset.taskAction = "edit";
     deleteTaskBtn.dataset.taskAction = "delete";
     
-    if (projectIndex != null) {
-        container.dataset.projectIndex = projectIndex;
-    }
 
     taskActions.append(editTaskBtn, deleteTaskBtn);
 
@@ -145,10 +141,10 @@ function createTaskUI(task, index, projectIndex) {
 
         taskTitle.append(taskDetailsBtn);
         container.append(checkbox, taskTitle, taskDetails, taskActions, taskDate);
-        createNewTaskListeners(checkbox, taskActions, taskDetailsBtn);
+        createNewTaskListeners(taskIndex, projectIndex, checkbox, taskActions, taskDetailsBtn);
     } else {
         container.append(checkbox, taskTitle, taskActions, taskDate);
-        createNewTaskListeners(checkbox, taskActions);
+        createNewTaskListeners(taskIndex, projectIndex, checkbox, taskActions);
     }
 
     if (task.priority) {
@@ -172,20 +168,18 @@ function createTaskUI(task, index, projectIndex) {
     return container;
 }
 
-function createNewTaskListeners(checkbox, taskActions, detailsBtn) {
-    checkbox.addEventListener("input", markTaskCompletedUI);
+function createNewTaskListeners(taskIndex, projectIndex, checkbox, taskActions, detailsBtn) {
+    // checkbox.addEventListener("input", markTaskCompletedUI);
+    checkbox.addEventListener("input", (e) => {
+        markTaskCompletedUI(e.target, taskIndex, projectIndex);
+    });
 
     taskActions.addEventListener("click", (e) => {
         const button = e.target.closest("button");
         if (button === null) return;
 
-        const taskNode = button.closest("div.task");
-        if (taskNode.dataset.projectIndex) {
-            currTaskInfo.project = taskNode.dataset.projectIndex;
-        } else {
-            currTaskInfo.project = activeTab;
-        }
-        currTaskInfo.index = +taskNode.dataset.taskIndex;
+        currTaskInfo.index = taskIndex;
+        currTaskInfo.project = projectIndex;
 
         if (button.dataset.taskAction === "edit") {
             openModal("edit");
@@ -199,16 +193,11 @@ function createNewTaskListeners(checkbox, taskActions, detailsBtn) {
 }
 
 // Tasks actions functions
-function markTaskCompletedUI(e) {
-    const taskNode = e.currentTarget.closest("div.task");
-    const taskIndex = taskNode.dataset.taskIndex;
+function markTaskCompletedUI(target, taskIndex, projectIndex) {
+    const taskNode = target.closest("div.task");
     taskNode.classList.toggle("completed");
 
-    if (taskNode.dataset.projectIndex) {
-        return markTaskCompleted(taskNode.dataset.projectIndex, taskIndex);
-    }
-
-    markTaskCompleted(activeTab, taskIndex);
+    projects[projectIndex].tasks[taskIndex].toggleCompletedState();
 }
 
 function showTaskDetails(e) {
@@ -299,7 +288,7 @@ function renderTasks() {
             break;
         default:
             projects[activeTab].tasks.forEach((task, index) => {
-                const taskNode = createTaskUI(task, index);
+                const taskNode = createTaskUI(task, index, activeTab);
                 fragment.prepend(taskNode);
             });
     }
@@ -381,7 +370,7 @@ homeProject.addTask(task("Terminar modelado",
 homeProject.addTask(task("Terminar modelado - 1",
     `Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptatum expedita at excepturi recusandae labore possimus unde dolorum molestias eligendi odit quibusdam doloremque repudiandae quia earum illum ullam maiores, asperiores pariatur. Sed, saepe ? Facere iure fugiat dolore magni, assumenda ullam dolorum, officiis accusantium dignissimos itaque beatae sed ratione saepe a, non molestias reprehenderit laborum error ? Aperiam neque magni in ea tempore. Eum laudantium maiores, id aperiam, dolore quam, facilis incidunt exercitationem labore dolorem sed non laborum repellendus ab distinctio maxime et vero enim ? Ex, rem hic voluptatum ad quisquam architecto nobis. Ex rerum porro error dolore, doloribus consequuntur, facilis quam quos iure ad tempora labore id explicabo laborum debitis ratione voluptate, nobis eos vero obcaecati quod distinctio eveniet provident.Nihil, doloremque ? 
     Aspernatur reiciendis aliquid rerum aliquam quas! Autem quod mollitia dicta placeat eveniet unde, consequuntur quis repellendus labore saepe cum laudantium dignissimos illo voluptate veritatis quo magnam ut sapiente porro nesciunt.`,
-    new Date("2022-07-13 00:00"),
+    new Date("2022-09-01 00:00"),
     "none"));
 homeProject.addTask(task("Terminar modelado - 2",
     "asdasdadsadsa",
