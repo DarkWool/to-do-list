@@ -73,6 +73,7 @@
                         </button>
                     </form>
                 </div>
+
             </div>
         </section>
 
@@ -84,7 +85,7 @@
                 <div class="workspace_header">
 
                     <div class="workspace_header-top">
-                        <h3 class="workspace_title flex-g" contenteditable="true">Home</h3>
+                        <h3 class="workspace_title flex-g">Home</h3>
                     </div>
 
                     <div class="n-task active">
@@ -95,6 +96,8 @@
                             Add new task
                         </button>
                     </div>
+
+                    <!-- <hr style="margin: 15px 0 0 0;/*! color: #cdd7e5; *//*! background-color: #cdd7e5; */border: 1px solid #cdd7e5;"> -->
 
                 </div>
 
@@ -152,7 +155,7 @@
 
         <div class="task-modal">
             <div class="task-modal_header">
-                <span class="task-modal_title">New Task</span>
+                <span class="task-modal_title"></span>
                 <button type="button" class="close-modal-btn icon-container">
                     <svg width="24" height="24" viewBox="0 0 24 24">
                         <title>Close</title>
@@ -161,81 +164,69 @@
                     </svg>
                 </button>
             </div>
-            <form id="newTaskForm" class="task-modal_body">
-                <div class="task-modal_w span-2-col">
-                    <label for="f-nTaskTitle">
-                        Title<span class="danger-color">*</span>
-                    </label>
-                    <input name="f-nTaskTitle" id="f-nTaskTitle" type="text" required>
-                    <div class="invalid-input">
-                        Tasks must have a title
+            <div class="task-modal_body">
+                <form id="newTaskForm" class="task-modal_form" novalidate>
+                    <div class="task-modal_w span-2-col">
+                        <label for="f-nTaskTitle">
+                            Title<span class="danger-color">*</span>
+                        </label>
+                        <input name="f-nTaskTitle" id="f-nTaskTitle" type="text" required>
+                        <span class="invalid-input">
+                            Task must include a title.
+                        </span>
                     </div>
-                </div>
-                <div class="task-modal_w span-2-col">
-                    <label for="f-nTaskDetails">Details (notes)</label>
-                    <textarea name="f-nTaskDetails" id="f-nTaskDetails" class="resize-vertical" rows="10"
-                        placeholder="Important details of your task..."></textarea>
-                </div>
-                <div class="task-modal_w">
-                    <label for="f-nTaskPriority">Priority</label>
-                    <select name="f-nTaskPriority" id="f-nTaskPriority">
-                        <option value="none">None</option>
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
-                    </select>
-                </div>
-                <div class="task-modal_w">
-                    <label for="f-nTaskDate">Due date</label>
-                    <input name="f-nTaskDate" id="f-nTaskDate" type="date">
-                </div>
-
-                <input class="task-modal_submit span-2-col" type="submit" value="Submit">
-            </form>
-        </div>
-
-        <div class="task-modal">
-            <div class="task-modal_header">
-                <span class="task-modal_title">Edit Task</span>
-                <button type="button" class="close-modal-btn icon-container">
-                    <svg width="24" height="24" viewBox="0 0 24 24">
-                        <title>Close</title>
-                        <path
-                            d="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z" />
-                    </svg>
-                </button>
+                    <div class="task-modal_w span-2-col">
+                        <label for="f-nTaskDetails">Details (notes)</label>
+                        <textarea name="f-nTaskDetails" id="f-nTaskDetails" class="resize-vertical" rows="10"
+                            placeholder="Important details of your task..."></textarea>
+                    </div>
+                    <div class="task-modal_w">
+                        <label for="f-nTaskPriority">Priority</label>
+                        <select name="f-nTaskPriority" id="f-nTaskPriority">
+                            <option value="none">None</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="task-modal_w">
+                        <label for="f-nTaskDate">Due date</label>
+                        <input name="f-nTaskDate" id="f-nTaskDate" type="date">
+                    </div>
+                
+                    <input class="task-modal_submit span-2-col" type="submit" value="Create task">
+                </form>
+                <form id="editTaskForm" class="task-modal_form">
+                    <div class="task-modal_w span-2-col">
+                        <label for="f-eTaskTitle">
+                            Title<span class="danger-color">*</span>
+                        </label>
+                        <input name="f-eTaskTitle" id="f-eTaskTitle" type="text" required>
+                        <span class="invalid-input">
+                            Task must include a title.
+                        </span>
+                    </div>
+                    <div class="task-modal_w span-2-col">
+                        <label for="f-eTaskDetails">Details (notes)</label>
+                        <textarea name="f-eTaskDetails" id="f-eTaskDetails" class="resize-vertical" rows="10"
+                            placeholder="Important details of your task..."></textarea>
+                    </div>
+                    <div class="task-modal_w">
+                        <label for="f-eTaskPriority">Priority</label>
+                        <select name="f-eTaskPriority" id="f-eTaskPriority">
+                            <option value="none">None</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="task-modal_w">
+                        <label for="f-eTaskDate">Due date</label>
+                        <input name="f-eTaskDate" id="f-eTaskDate" type="date">
+                    </div>
+                    <input class="task-modal_submit span-2-col" type="submit" value="Confirm edit">
+                </form>
             </div>
-            <form id="editTaskForm" class="task-modal_body">
-                <div class="task-modal_w span-2-col">
-                    <label for="f-eTaskTitle">
-                        Title<span class="danger-color">*</span>
-                    </label>
-                    <input name="f-eTaskTitle" id="f-eTaskTitle" type="text" required>
-                    <div class="invalid-input">
-                        Tasks must have a title
-                    </div>
-                </div>
-                <div class="task-modal_w span-2-col">
-                    <label for="f-eTaskDetails">Details (notes)</label>
-                    <textarea name="f-eTaskDetails" id="f-eTaskDetails" class="resize-vertical" rows="10"
-                        placeholder="Important details of your task..."></textarea>
-                </div>
-                <div class="task-modal_w">
-                    <label for="f-eTaskPriority">Priority</label>
-                    <select name="f-eTaskPriority" id="f-eTaskPriority">
-                        <option value="none">None</option>
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
-                    </select>
-                </div>
-                <div class="task-modal_w">
-                    <label for="f-eTaskDate">Due date</label>
-                    <input name="f-eTaskDate" id="f-eTaskDate" type="date">
-                </div>
-
-                <input class="task-modal_submit span-2-col" type="submit" value="Submit">
-            </form>
         </div>
 
         <div class="dark-overlay"></div>
