@@ -83,7 +83,6 @@
 
                 <!-- Project info -->
                 <div class="workspace_header">
-
                     <div class="workspace_header-top">
                         <h3 class="workspace_title flex-g">Home</h3>
                     </div>
@@ -98,7 +97,6 @@
                     </div>
 
                     <!-- <hr style="margin: 15px 0 0 0;/*! color: #cdd7e5; *//*! background-color: #cdd7e5; */border: 1px solid #cdd7e5;"> -->
-
                 </div>
 
                 <!-- Project content -->
@@ -193,10 +191,11 @@
                         <label for="f-nTaskDate">Due date</label>
                         <input name="f-nTaskDate" id="f-nTaskDate" type="date">
                     </div>
-                
+
                     <input class="task-modal_submit span-2-col" type="submit" value="Create task">
                 </form>
-                <form id="editTaskForm" class="task-modal_form">
+
+                <form id="editTaskForm" class="task-modal_form" novalidate>
                     <div class="task-modal_w span-2-col">
                         <label for="f-eTaskTitle">
                             Title<span class="danger-color">*</span>
@@ -224,6 +223,7 @@
                         <label for="f-eTaskDate">Due date</label>
                         <input name="f-eTaskDate" id="f-eTaskDate" type="date">
                     </div>
+
                     <input class="task-modal_submit span-2-col" type="submit" value="Confirm edit">
                 </form>
             </div>
