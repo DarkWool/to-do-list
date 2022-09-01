@@ -28,6 +28,8 @@ newTaskForm.addEventListener("submit", getNewTaskData);
 editTaskForm.addEventListener("submit", editTask);
 darkOverlay.addEventListener("click", closeModal);
 modalCloseBtn.addEventListener("click", closeModal);
+newTaskTitle.addEventListener("blur", detectMissingInput);
+editTaskTitle.addEventListener("blur", detectMissingInput);
 
 const icons = {
     edit: `<svg width="20" height="20" viewBox="0 0 24 24">
@@ -39,17 +41,16 @@ const icons = {
 
 // Modal functions
 function openModal(modalType) {
+    resetForm();
     taskModal.classList.add("active");
     darkOverlay.classList.add("active");
 
     if (modalType === "new") {
         taskModalTitle.textContent = "New Task";
         newTaskForm.classList.add("active");
-        editTaskForm.classList.remove("active");
     } else {
         taskModalTitle.textContent = "Edit Task";
         editTaskForm.classList.add("active");
-        newTaskForm.classList.remove("active");
     }
 }
 
@@ -63,9 +64,8 @@ function getNewTaskData(e) {
     // Do not let the form refresh the page
     e.preventDefault();
 
-    const inputs = e.target.elements;
-    const titleInput = inputs["f-nTaskTitle"];
-    if (titleInput.value === "") return;
+    const titleInput = e.target.elements["f-nTaskTitle"];
+    if (validateFormData(titleInput) === false) return;
 
     const data = new FormData(e.currentTarget);
     const title = data.get("f-nTaskTitle");
@@ -77,7 +77,6 @@ function getNewTaskData(e) {
         date = null;
     }
 
-    e.target.reset();
     composeNewTask(title, details, date, priority);
     closeModal();
 }
@@ -245,6 +244,9 @@ function setEditFormValues() {
 function editTask(e) {
     e.preventDefault();
 
+    const titleInput = e.target.elements["f-eTaskTitle"];
+    if (validateFormData(titleInput) === false) return;
+
     const data = new FormData(e.currentTarget);
     const title = data.get("f-eTaskTitle");
     const details = data.get("f-eTaskDetails");
@@ -306,6 +308,55 @@ function cleanTasksContainer() {
     tasksContainer.innerHTML = "";
 }
 
+
+// Form helper functions
+function detectMissingInput(e) {
+    if (e.currentTarget.value === "") {
+        showInputError(e.currentTarget);
+    } else {
+        hideInputError(e.currentTarget);
+    }
+}
+
+function getClosestErrorMessage(input) {
+    const div = input.closest("div.task-modal_w");
+    const errorNode = div.getElementsByClassName("invalid-input")[0];
+    if (errorNode === null) return;
+
+    return errorNode;
+}
+
+function showInputError(input) {
+    const errorNode = getClosestErrorMessage(input);
+    errorNode.classList.add("active");
+}
+
+function hideInputError(input) {
+    const errorNode = getClosestErrorMessage(input);
+    errorNode.classList.remove("active");
+}
+
+function validateFormData(input) {
+    if (input.value === "") {
+        showInputError(input);
+        input.focus();
+        return false;
+    }
+}
+
+function resetForm() {
+    const forms = taskModal.getElementsByClassName("task-modal_form active");
+    for (let form of forms) {
+        form.classList.remove("active");
+        form.reset();
+
+        const invalidInputs = form.getElementsByClassName("invalid-input active");
+        if (invalidInputs === null) return;
+        for (let i = invalidInputs.length - 1; i >= 0; i--) {
+            invalidInputs[i].classList.remove("active");
+        }
+    }
+}
 
 
 // Test data
