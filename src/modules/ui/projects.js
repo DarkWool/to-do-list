@@ -1,8 +1,9 @@
 import { renderTasks } from "./tasks.js";
 import { createNewProject, projects } from "../projects.js";
 
-// Stores which project is currently selected by the user
+// Stores which project is currently selected by the user and the sidebar project title container
 let activeTab = 0;
+let sidebarProjectTitle;
 
 
 // DOM Cache
@@ -22,12 +23,15 @@ sidebarItems[1].addEventListener("click", (e) => changeProject(e.currentTarget, 
 sidebarItems[2].addEventListener("click", (e) => changeProject(e.currentTarget, "This Week"));
 newProjectForm.addEventListener("submit", (e) => {
     e.preventDefault();
+
     const title = e.currentTarget.elements["formProjectTitle"].value;
+    if (title === "") return;
 
     e.currentTarget.reset();
     hideNewProjectForm();
     composeNewProject(title);
 });
+
 
 // Functions
 function composeNewProject(title) {
@@ -78,6 +82,8 @@ function changeProject(projectNode, project) {
     switchProjectTab(projectNode);
 
     activeTab = project;
+    sidebarProjectTitle = projectNode.getElementsByClassName("flex-g")[0];
+    workspaceTitle.removeEventListener("click", updateProjectTitle);
 
     if (project === "Today" || project === "This Week") {
         workspaceTitle.textContent = project;
@@ -85,6 +91,10 @@ function changeProject(projectNode, project) {
     } else {
         workspaceTitle.textContent = projects[project].title;
         newTaskContainer.classList.add("active");
+
+        if (project !== 0) {
+            workspaceTitle.addEventListener("click", updateProjectTitle);
+        }
     }
 
     renderTasks();
@@ -99,6 +109,39 @@ function switchProjectTab(tab) {
     tab.classList.add("active");
 }
 
+function updateProjectTitle() {
+    const input = document.createElement("input");
+    input.autocomplete = "off";
+    input.value = projects[activeTab].title;
+    input.classList.add("workspace_title-input");
+
+    // Listeners
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") input.blur();
+    });
+    input.addEventListener("blur", () => {
+        // Perform a basic 'validation', if the user lefts the project without a name set it to "Untitled"
+        if (input.value === "") {
+            workspaceTitle.innerText = "Untitled";
+            sidebarProjectTitle.innerText = "Untitled";
+            projects[activeTab].title = "Untitled";
+        }
+
+        input.remove();
+        workspaceTitle.innerText = input.value;
+        workspaceTitle.classList.add("active");
+    });
+    input.addEventListener("input", () => {
+        // Update the corresponding project title of the sidebar and the project object
+        sidebarProjectTitle.innerText = input.value;
+        projects[activeTab].title = input.value;
+    });
+
+    workspaceTitle.classList.remove("active");
+    workspaceTitle.after(input);
+    input.focus();
+}
+
 function renderProjects() {
     const fragment = document.createDocumentFragment();
 
@@ -111,11 +154,9 @@ function renderProjects() {
 
         // Activate the first element event listener (to change the curr project selected)
         fragment.children[0].click();
-        // changeProject(fragment.children[0], totalProjects - 1);
     } else {
         // Activate the 'home' event listener and change the project selected
         sidebarItems[0].click();
-        // changeProject(sidebarItems[0], 0);
     }
 
     sidebarUserProjects.innerHTML = "";
@@ -128,25 +169,21 @@ function showNewProjectForm() {
     newProjectBtn.classList.remove("active");
     newProjectForm.classList.add("active");
 
-    document.addEventListener("click", detectClickOutsideForm); //not
-    focusNode(newProjectForm.firstElementChild);
+    document.addEventListener("click", detectClickOutsideForm);
+    newProjectForm.firstElementChild.focus();
 }
 
 function hideNewProjectForm() {
     newProjectBtn.classList.add("active");
     newProjectForm.classList.remove("active");
 
-    document.removeEventListener("click", detectClickOutsideForm); //not
+    document.removeEventListener("click", detectClickOutsideForm);
 }
 
 function detectClickOutsideForm(e) {
     if (e.target.closest(".n-project_form") || e.target.closest("#newProject")) return;
 
     hideNewProjectForm();
-}
-
-function focusNode(node) {
-    node.focus();
 }
 
 export {
