@@ -306,17 +306,24 @@ input[type="checkbox"]:checked {
     color: white;
 }
 
-.task-modal_body {
-    display: grid;
-    grid-template-rows: auto auto auto;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    background-color: white;
-}
-
 .task-modal_header,
 .task-modal_body {
     padding: 25px;
+}
+
+.task-modal_body {
+    background-color: white;
+}
+
+.task-modal_form {
+    display: none;
+    grid-template-rows: auto auto auto;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.task-modal_form.active {
+    display: grid;
 }
 
 .task-modal_w {
@@ -335,13 +342,10 @@ input[type="checkbox"]:checked {
 .invalid-input {
     display: none;
     font-size: 1.2rem;
+    color: hsl(0, 97%, 45%);
 }
 
 .invalid-input.active {
-    display: block;
-}
-
-#taskTitle:invalid + .invalid-input {
     display: block;
 }
 

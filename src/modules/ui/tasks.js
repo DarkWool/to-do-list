@@ -13,30 +13,21 @@ const currTaskInfo = {
 const newTaskBtn = document.getElementsByClassName("n-task_btn")[0];
 const tasksContainer = document.getElementById("tasks");
 
-const taskModals = document.getElementsByClassName("task-modal");
-const newTaskModal = taskModals[0];
-const editTaskModal = taskModals[1];
+const taskModal = document.getElementsByClassName("task-modal")[0];
+const taskModalTitle = taskModal.getElementsByClassName("task-modal_title")[0];
+const modalCloseBtn = taskModal.getElementsByClassName("close-modal-btn")[0];
 const newTaskForm = document.getElementById("newTaskForm");
 const editTaskForm = document.getElementById("editTaskForm");
+const newTaskTitle = document.getElementById("f-nTaskTitle");
+const editTaskTitle = document.getElementById("f-eTaskTitle");
 const darkOverlay = document.getElementsByClassName("dark-overlay")[0];
 
 // Event Listeners
-newTaskBtn.addEventListener("click", () => openModal(newTaskModal));
+newTaskBtn.addEventListener("click", () => openModal("new"));
 newTaskForm.addEventListener("submit", getNewTaskData);
 editTaskForm.addEventListener("submit", editTask);
-darkOverlay.addEventListener("click", () => {
-    for (let modal of taskModals) {
-        closeModal(modal);
-    }
-});
-
-for (let modal of taskModals) {
-    const closeBtn = modal.getElementsByClassName("close-modal-btn")[0];
-    closeBtn.addEventListener("click", (e) => {
-        const modal = e.currentTarget.closest(".task-modal");
-        closeModal(modal);
-    });
-}
+darkOverlay.addEventListener("click", closeModal);
+modalCloseBtn.addEventListener("click", closeModal);
 
 const icons = {
     edit: `<svg width="20" height="20" viewBox="0 0 24 24">
@@ -45,12 +36,55 @@ const icons = {
         <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"></path></svg>`,
 }
 
-// Functions
+
+// Modal functions
+function openModal(modalType) {
+    taskModal.classList.add("active");
+    darkOverlay.classList.add("active");
+
+    if (modalType === "new") {
+        taskModalTitle.textContent = "New Task";
+        newTaskForm.classList.add("active");
+        editTaskForm.classList.remove("active");
+    } else {
+        taskModalTitle.textContent = "Edit Task";
+        editTaskForm.classList.add("active");
+        newTaskForm.classList.remove("active");
+    }
+}
+
+function closeModal() {
+    taskModal.classList.remove("active");
+    darkOverlay.classList.remove("active");
+}
+
+// Functions for creating a new task
+function getNewTaskData(e) {
+    // Do not let the form refresh the page
+    e.preventDefault();
+
+    const inputs = e.target.elements;
+    const titleInput = inputs["f-nTaskTitle"];
+    if (titleInput.value === "") return;
+
+    const data = new FormData(e.currentTarget);
+    const title = data.get("f-nTaskTitle");
+    const details = data.get("f-nTaskDetails");
+    const priority = data.get("f-nTaskPriority");
+
+    let date = new Date(`${data.get("f-nTaskDate")} 00:00`);
+    if (isValid(date) === false) {
+        date = null;
+    }
+
+    e.target.reset();
+    composeNewTask(title, details, date, priority);
+    closeModal();
+}
+
 function composeNewTask(title, details, date, priority) {
     const newTask = task(title, details, date, priority);
     const newTaskIndex = projects[activeTab].addTask(newTask);
-
-    closeModal(newTaskModal);
 
     tasksContainer.prepend(createTaskUI(newTask, newTaskIndex));
 }
@@ -68,6 +102,8 @@ function createTaskUI(task, index, projectIndex) {
     taskTitle.classList.add("task_title");
     taskActions.classList.add("task_actions");
     taskDate.classList.add("task_date");
+    editTaskBtn.classList.add("icon-container");
+    deleteTaskBtn.classList.add("icon-container");
 
     checkbox.type = "checkbox";
     editTaskBtn.type = "button";
@@ -150,7 +186,7 @@ function createNewTaskListeners(checkbox, taskActions, detailsBtn) {
         currTaskInfo.index = +taskNode.dataset.taskIndex;
 
         if (button.dataset.taskAction === "edit") {
-            openModal(editTaskModal);
+            openModal("edit");
             setEditFormValues();
         } else if (button.dataset.taskAction === "delete") {
             deleteTask();
@@ -160,7 +196,7 @@ function createNewTaskListeners(checkbox, taskActions, detailsBtn) {
     if (detailsBtn) detailsBtn.addEventListener("click", showTaskDetails);
 }
 
-// Task actions functions
+// Tasks actions functions
 function markTaskCompletedUI(e) {
     const taskNode = e.currentTarget.closest("div.task");
     const taskIndex = taskNode.dataset.taskIndex;
@@ -190,36 +226,7 @@ function deleteTask() {
     renderTasks();
 }
 
-// Task forms functions
-function openModal(modal) {
-    if (modal) modal.classList.add("active");
-    darkOverlay.classList.add("active");
-}
-
-function closeModal(modal) {
-    if (modal) modal.classList.remove("active");
-    darkOverlay.classList.remove("active");
-}
-
-function getNewTaskData(e) {
-    // Do not let the form refresh the page
-    e.preventDefault();
-
-    const inputs = e.target.elements;
-    const titleInput = inputs["f-nTaskTitle"];
-    if (titleInput.value === "") return;
-
-    const data = new FormData(e.currentTarget);
-    const title = data.get("f-nTaskTitle");
-    const details = data.get("f-nTaskDetails");
-    const priority = data.get("f-nTaskPriority");
-
-    let date = new Date(`${data.get("f-nTaskDate")} 00:00`);
-    if (isValid(date) === false) date = null;
-
-    composeNewTask(title, details, date, priority);
-}
-
+// Edit task
 function setEditFormValues() {
     let currTask = projects[currTaskInfo.project].tasks[currTaskInfo.index];
     editTaskForm.reset();
@@ -249,7 +256,7 @@ function editTask(e) {
     currTask.details = details;
     currTask.priority = priority;
 
-    // If the date is valid change the value in the task object
+    // If the date is valid change the value of the task object
     if (isValid(date) === true) {
         currTask.date = date;
     } else {
@@ -257,17 +264,11 @@ function editTask(e) {
     }
 
     renderTasks();
-    closeModal(editTaskModal);
-}
-
-
-function cleanTasks() {
-    tasksContainer.innerHTML = "";
+    closeModal();
 }
 
 function renderTasks() {
-    // Clean tasks
-    tasksContainer.innerHTML = "";
+    cleanTasksContainer();
 
     const fragment = document.createDocumentFragment();
     switch (activeTab) {
@@ -301,6 +302,9 @@ function renderTasks() {
     tasksContainer.prepend(fragment);
 }
 
+function cleanTasksContainer() {
+    tasksContainer.innerHTML = "";
+}
 
 
 
