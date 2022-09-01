@@ -82,6 +82,9 @@ function getNewTaskData(e) {
 }
 
 function composeNewTask(title, details, date, priority) {
+    // If this is the first task of the project then clean the 'no tasks' message
+    if (projects[activeTab].tasks[0] == null) cleanTasksContainer();
+
     const newTask = task(title, details, date, priority);
     const newTaskIndex = projects[activeTab].addTask(newTask);
 
@@ -301,7 +304,18 @@ function renderTasks() {
             });
     }
 
+    if (fragment.children.length === 0) {
+        fragment.prepend(renderNoTasksMessage());
+    }
+
     tasksContainer.prepend(fragment);
+}
+
+function renderNoTasksMessage() {
+    const msgContainer = document.createElement("div");
+    msgContainer.textContent = "You don't have any tasks, just relax!";
+
+    return msgContainer;
 }
 
 function cleanTasksContainer() {
