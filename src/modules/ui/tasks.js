@@ -1,11 +1,12 @@
 import { format, isToday, isThisWeek, isValid } from "date-fns";
-import { homeProject, projects } from "../projects.js";
-import { task } from "../tasks.js";
+import { tasksHandler, task } from "../tasks.js";
+import { projectsHandler } from "../projects.js";
 import { activeTab } from "./projects.js";
+import { updateTasksStorage } from "../storage.js";
 
+let tasksCount;
 const currTaskInfo = {
     index: null,
-    project: null,
 };
 
 
@@ -30,13 +31,6 @@ darkOverlay.addEventListener("click", closeModal);
 modalCloseBtn.addEventListener("click", closeModal);
 newTaskTitle.addEventListener("blur", detectMissingInput);
 editTaskTitle.addEventListener("blur", detectMissingInput);
-
-const icons = {
-    edit: `<svg width="20" height="20" viewBox="0 0 24 24">
-        <path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"></path></svg>`,
-    delete: `<svg width="20" height="20" viewBox="0 0 24 24">
-        <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"></path></svg>`,
-}
 
 
 // Modal functions
@@ -83,16 +77,19 @@ function getNewTaskData(e) {
 
 function composeNewTask(title, details, date, priority) {
     // If this is the first task of the project then clean the 'no tasks' message
-    if (projects[activeTab].tasks[0] == null) cleanTasksContainer();
+    if (tasksCount === 0) cleanTasksContainer();
+    
+    const projectId = projectsHandler.items[activeTab].id;
+    const newTask = task(title, details, date, priority, projectId);
+    const newTaskIndex = tasksHandler.addTask(newTask);
 
-    const newTask = task(title, details, date, priority);
-    const newTaskIndex = projects[activeTab].addTask(newTask);
-
+    updateTasksStorage();
     tasksContainer.prepend(createTaskUI(newTask, newTaskIndex));
+    tasksCount++;
 }
 
-function createTaskUI(task, taskIndex, projectIndex) {
-    const container = document.createElement("div");
+function createTaskUI(task, taskIndex) {
+    const taskContainer = document.createElement("div");
     const checkbox = document.createElement("input");
     const taskTitle = document.createElement("div");
     const taskActions = document.createElement("div");
@@ -100,7 +97,7 @@ function createTaskUI(task, taskIndex, projectIndex) {
     const deleteTaskBtn = document.createElement("button");
     const taskDate = document.createElement("div");
 
-    container.classList.add("task");
+    taskContainer.classList.add("task");
     taskTitle.classList.add("task_title");
     taskActions.classList.add("task_actions");
     taskDate.classList.add("task_date");
@@ -112,8 +109,12 @@ function createTaskUI(task, taskIndex, projectIndex) {
     deleteTaskBtn.type = "button";
 
     taskTitle.textContent = task.title;
-    editTaskBtn.innerHTML = icons.edit;
-    deleteTaskBtn.innerHTML = icons.delete;
+    editTaskBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,
+        5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"></path></svg>`;
+    deleteTaskBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z">
+        </path></svg>`;
 
     if (task.date !== null) {
         taskDate.textContent = format(task.date, "E MMM dd, yyyy");
@@ -123,8 +124,11 @@ function createTaskUI(task, taskIndex, projectIndex) {
 
     editTaskBtn.dataset.taskAction = "edit";
     deleteTaskBtn.dataset.taskAction = "delete";
-    
 
+    checkbox.setAttribute("aria-label", "Mark task as completed");
+    editTaskBtn.setAttribute("aria-label", "Edit task");
+    deleteTaskBtn.setAttribute("aria-label", "Delete task");
+    
     taskActions.append(editTaskBtn, deleteTaskBtn);
 
     if (task.details) {
@@ -136,42 +140,43 @@ function createTaskUI(task, taskIndex, projectIndex) {
         taskDetails.textContent = task.details;
 
         taskDetailsBtn.type = "button";
-        taskDetailsBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24"><path d="M7.41,8.58L12,
-        13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg>`;
+        taskDetailsBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path></svg>`;
+
+        taskDetailsBtn.setAttribute("aria-label", "Show task details");
 
         taskTitle.append(taskDetailsBtn);
-        container.append(checkbox, taskTitle, taskDetails, taskActions, taskDate);
-        createNewTaskListeners(taskIndex, projectIndex, checkbox, taskActions, taskDetailsBtn);
+        taskContainer.append(checkbox, taskTitle, taskDetails, taskDate, taskActions);
+        createNewTaskListeners(taskIndex, checkbox, taskActions, taskDetailsBtn);
     } else {
-        container.append(checkbox, taskTitle, taskActions, taskDate);
-        createNewTaskListeners(taskIndex, projectIndex, checkbox, taskActions);
+        taskContainer.append(checkbox, taskTitle, taskDate, taskActions);
+        createNewTaskListeners(taskIndex, checkbox, taskActions);
     }
 
     if (task.priority) {
         switch (task.priority) {
             case "low":
-                container.classList.add("low-priority");
+                taskContainer.classList.add("low-priority");
                 break;
             case "medium":
-                container.classList.add("medium-priority");
+                taskContainer.classList.add("medium-priority");
                 break;
             case "high":
-                container.classList.add("high-priority");
+                taskContainer.classList.add("high-priority");
         }
     }
 
     if (task.completed === true) {
         checkbox.checked = true;
-        container.classList.toggle("completed");
+        taskContainer.classList.toggle("completed");
     }
 
-    return container;
+    return taskContainer;
 }
 
-function createNewTaskListeners(taskIndex, projectIndex, checkbox, taskActions, detailsBtn) {
-    // checkbox.addEventListener("input", markTaskCompletedUI);
+function createNewTaskListeners(taskIndex, checkbox, taskActions, detailsBtn) {
     checkbox.addEventListener("input", (e) => {
-        markTaskCompletedUI(e.target, taskIndex, projectIndex);
+        markTaskCompletedUI(e.target, taskIndex);
     });
 
     taskActions.addEventListener("click", (e) => {
@@ -179,7 +184,6 @@ function createNewTaskListeners(taskIndex, projectIndex, checkbox, taskActions, 
         if (button === null) return;
 
         currTaskInfo.index = taskIndex;
-        currTaskInfo.project = projectIndex;
 
         if (button.dataset.taskAction === "edit") {
             openModal("edit");
@@ -193,11 +197,12 @@ function createNewTaskListeners(taskIndex, projectIndex, checkbox, taskActions, 
 }
 
 // Tasks actions functions
-function markTaskCompletedUI(target, taskIndex, projectIndex) {
+function markTaskCompletedUI(target, taskIndex) {
     const taskNode = target.closest("div.task");
     taskNode.classList.toggle("completed");
 
-    projects[projectIndex].tasks[taskIndex].toggleCompletedState();
+    tasksHandler.toggleCompletedState(taskIndex);
+    updateTasksStorage();
 }
 
 function showTaskDetails(e) {
@@ -212,14 +217,15 @@ function showTaskDetails(e) {
 
 function deleteTask() {
     // Delete task obj from project
-    projects[currTaskInfo.project].deleteTask(currTaskInfo.index);
+    tasksHandler.removeTask(currTaskInfo.index);
 
+    updateTasksStorage();
     renderTasks();
 }
 
 // Edit task
 function setEditFormValues() {
-    let currTask = projects[currTaskInfo.project].tasks[currTaskInfo.index];
+    let currTask = tasksHandler.items[currTaskInfo.index];
     editTaskForm.reset();
 
     const formFields = editTaskForm.elements;
@@ -245,7 +251,7 @@ function editTask(e) {
     const priority = data.get("f-eTaskPriority");
     let date = new Date(`${data.get("f-eTaskDate")} 00:00`);
 
-    let currTask = projects[currTaskInfo.project].tasks[currTaskInfo.index];
+    let currTask = tasksHandler.items[currTaskInfo.index];
     currTask.title = title;
     currTask.details = details;
     currTask.priority = priority;
@@ -257,6 +263,7 @@ function editTask(e) {
         currTask.date = null;
     }
 
+    updateTasksStorage();
     renderTasks();
     closeModal();
 }
@@ -267,33 +274,33 @@ function renderTasks() {
     const fragment = document.createDocumentFragment();
     switch (activeTab) {
         case "Today":
-            projects.forEach((project, projectIndex) => {
-                project.tasks.forEach((task, index) => {
-                    if (isToday(task.date)) {
-                        const taskNode = createTaskUI(task, index, projectIndex);
-                        fragment.prepend(taskNode);
-                    }
-                });
+            tasksHandler.items.forEach((task, index) => {
+                if (isToday(task.date)) {
+                    const taskNode = createTaskUI(task, index);
+                    fragment.prepend(taskNode);
+                }
             });
             break;
         case "This Week":
-            projects.forEach((project, projectIndex) => {
-                project.tasks.forEach((task, index) => {
-                    if (isThisWeek(task.date)) {
-                        const taskNode = createTaskUI(task, index, projectIndex);
-                        fragment.prepend(taskNode);
-                    }
-                });
+            tasksHandler.items.forEach((task, index) => {
+                if (isThisWeek(task.date)) {
+                    const taskNode = createTaskUI(task, index);
+                    fragment.prepend(taskNode);
+                }
             });
             break;
         default:
-            projects[activeTab].tasks.forEach((task, index) => {
-                const taskNode = createTaskUI(task, index, activeTab);
-                fragment.prepend(taskNode);
+            const id = projectsHandler.items[activeTab].id;
+            tasksHandler.items.forEach((task, index) => {
+                if (task.projectIndex === id) {
+                    const taskNode = createTaskUI(task, index);
+                    fragment.prepend(taskNode);
+                }
             });
     }
 
-    if (fragment.children.length === 0) {
+    tasksCount = fragment.children.length;
+    if (tasksCount === 0) {
         fragment.prepend(renderNoTasksMessage());
     }
 
@@ -361,29 +368,6 @@ function resetForm() {
     }
 }
 
-
-// Test data
-homeProject.addTask(task("Terminar modelado",
-    "asdasdadsadsa",
-    new Date("2022-07-24 00:00"),
-    "high"));
-homeProject.addTask(task("Terminar modelado - 1",
-    `Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptatum expedita at excepturi recusandae labore possimus unde dolorum molestias eligendi odit quibusdam doloremque repudiandae quia earum illum ullam maiores, asperiores pariatur. Sed, saepe ? Facere iure fugiat dolore magni, assumenda ullam dolorum, officiis accusantium dignissimos itaque beatae sed ratione saepe a, non molestias reprehenderit laborum error ? Aperiam neque magni in ea tempore. Eum laudantium maiores, id aperiam, dolore quam, facilis incidunt exercitationem labore dolorem sed non laborum repellendus ab distinctio maxime et vero enim ? Ex, rem hic voluptatum ad quisquam architecto nobis. Ex rerum porro error dolore, doloribus consequuntur, facilis quam quos iure ad tempora labore id explicabo laborum debitis ratione voluptate, nobis eos vero obcaecati quod distinctio eveniet provident.Nihil, doloremque ? 
-    Aspernatur reiciendis aliquid rerum aliquam quas! Autem quod mollitia dicta placeat eveniet unde, consequuntur quis repellendus labore saepe cum laudantium dignissimos illo voluptate veritatis quo magnam ut sapiente porro nesciunt.`,
-    new Date("2022-09-01 00:00"),
-    "none"));
-homeProject.addTask(task("Terminar modelado - 2",
-    "asdasdadsadsa",
-    new Date("2022-07-11 00:00"),
-    "medium"));
-homeProject.addTask(task("Terminar modelado - 3",
-    null,
-    new Date("2022-08-08 00:00"),
-    "high"));
-homeProject.addTask(task("Terminar modelado - today",
-    "asdasdadsadsa",
-    new Date("2022-08-09 00:00"),
-    "low"));
 
 export {
     renderTasks

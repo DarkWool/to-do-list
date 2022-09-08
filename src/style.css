@@ -9,6 +9,9 @@
     --secondary-color: hsl(214, 33%, 95%);
     --text-color: hsl(0, 0%, 8%);
     --accent-color: hsl(0, 0%, 12%);
+    --blue: hsl(212, 100%, 48%);
+    --yellow: hsl(41, 100%, 50%);
+    --red: hsl(0, 100%, 57%);
 }
 
 html {
@@ -54,17 +57,15 @@ select, input[type="date"] {
     transition: 0.2s background-color ease;
 }
 
-select:hover, input[type="date"]:hover {
-    background-color: hsl(224, 100%, 98%);
-}
-
 
 
 
 .main-container {
     display: grid;
+    display: flex;
     grid-template-columns: 325px 1fr;
     height: 100%;
+    overflow: hidden;
 }
 
 
@@ -81,14 +82,27 @@ li {
 }
 
 .sidebar {
+    --sidebarHover: hsl(214.3, 33.3%, 85%);
     display: grid;
     grid-template-rows: auto auto 1fr auto;
     padding: 35px;
+    max-width: 325px;
+    width: 100%;
     background-color: var(--secondary-color);
 }
 
 .sidebar_top {
     margin-bottom: 40px;
+}
+
+.sidebar_center {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar_my-projects {
+    overflow-y: scroll;
+    height: 100%;
 }
 
 .sidebar_subtitle {
@@ -106,11 +120,21 @@ li {
     padding: 7px 12px;
     border-radius: 6px;
     user-select: none;
+    transition: 0.2s background-color ease;
 }
 
 .sidebar_item.active {
-    background-color: hsl(214.3, 33.3%, 85%);
+    fill: white;
+    color: white;
+    background-color: var(--accent-color);
     font-weight: 650;
+}
+
+.sidebar_item-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.4;
 }
 
 .sidebar_icon {
@@ -126,9 +150,16 @@ li {
     display: flex;
 }
 
+.n-project_form.active:focus-within {
+    border-radius: 5px;
+    box-shadow: 0 0 0 0.5rem hsla(211, 100%, 50%, 0.25);
+    outline: 1px solid var(--blue);
+}
+
 .n-project_form > :first-child {
     border-radius: 5px 0 0 5px;
     padding: 10px;
+    outline: none;
 }
 
 .n-project_form :nth-child(2) {
@@ -137,7 +168,7 @@ li {
 
 .n-project_btn {
     fill: white;
-    background-color: hsl(212, 91%, 48%);
+    background-color: var(--blue);
     padding: 5px;
 }
 
@@ -146,6 +177,9 @@ li {
 
 /* ----- Project content ----- */
 .workspace {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
     height: 100%;
     overflow: hidden;
 }
@@ -158,6 +192,7 @@ li {
     height: 100%;
     margin: 0 auto;
     padding: 50px 50px 0 50px;
+    overflow: hidden;
 }
 
 .workspace_header-top {
@@ -172,7 +207,6 @@ li {
 
 .workspace_title-input {
     border: none;
-    /* outline: none; */
     padding: 0;
 }
 
@@ -190,19 +224,20 @@ li {
     display: block;
 }
 
-#tasks {
-    height: 100%;
-    overflow: scroll;
-    padding-bottom: 50px;
-}
 
 
 
 /* ----- Tasks ----- */
+#tasks {
+    height: 100%;
+    overflow-y: scroll;
+    padding-bottom: 50px;
+}
+
 .task {
     position: relative;
     display: grid;
-    grid-template-columns: auto 1fr auto 120px;
+    grid-template-columns: auto 1fr 120px auto;
     grid-auto-rows: auto;
     align-items: center;
     gap: 5px 15px;
@@ -230,15 +265,15 @@ li {
 }
 
 .task.low-priority::before {
-    background-color: hsl(212, 100%, 55%);
+    background-color: var(--blue);
 }
 
 .task.medium-priority::before {
-    background-color: hsl(41, 100%, 50%);
+    background-color: var(--yellow);
 }
 
 .task.high-priority::before {
-    background-color: hsl(0, 100%, 57%);
+    background-color: var(--red);
 }
 
 input[type="checkbox"] {
@@ -247,15 +282,15 @@ input[type="checkbox"] {
     height: 18px;
     border-radius: 50%;
     flex-shrink: 0;
-    background-color: white;
     cursor: pointer;
+    background-color: white;
     background-repeat: no-repeat;
     background-position: center;
     transition: background 0.2s, border 0.2s ease;
 }
 
 input[type="checkbox"]:checked {
-    background-color: hsl(200, 11%, 22%);
+    background-color: var(--accent-color);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='m 10.164913,17.526668 -5.505259,-5.283825 1.7072418,-1.755566 3.7655972,3.5931 7.468802,-7.607045 1.739051,1.7231458 z'/%3E%3C/svg%3E");
     color: white;
     border: none;
@@ -281,13 +316,8 @@ input[type="checkbox"]:checked {
     display: flex;
     align-items: center;
     gap: 5px;
-    opacity: 0;
     transition: 0.1s opacity ease;
     fill: hsl(240, 3%, 39%);
-}
-
-.task:hover > .task_actions {
-    opacity: 1;
 }
 
 .task_date {
@@ -301,23 +331,22 @@ input[type="checkbox"]:checked {
 
 /* ----- Edit task modal ----- */
 .task-modal {
-    /* visibility: hidden; */
-    display: none;
+    pointer-events: none;
     position: absolute;
     width: 50ch;
-    top: 50%;
+    top: calc(50% - 20px);
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 2;
     overflow: hidden;
     border-radius: 6px;
     opacity: 0;
-    transition: 0.1s opacity ease;
+    transition: 0.2s all ease;
 }
 
 .task-modal.active {
-    display: block;
-    /* visibility: visible; */
+    pointer-events: all;
+    top: 50%;
     opacity: 1;
 }
 
@@ -328,6 +357,7 @@ input[type="checkbox"]:checked {
     font-weight: bold;
     font-size: 1.8rem;
     background-color: hsl(0, 0%, 5%);
+    background-color: var(--accent-color);
     color: white;
 }
 
@@ -374,16 +404,6 @@ input[type="checkbox"]:checked {
     display: block;
 }
 
-.task-modal_submit {
-    cursor: pointer;
-    padding: 15px 10px;
-    border: none;
-    border-radius: 4px;
-    font-weight: bold;
-    background-color: hsl(0, 0%, 12%);
-    color: white;
-}
-
 
 
 
@@ -393,7 +413,7 @@ input[type="checkbox"]:checked {
     width: 100%;
     height: 100%;
     opacity: 0;
-    transition: 0.1s opacity ease;
+    transition: 0.2s opacity ease;
     background-color: rgba(0, 0, 0, 0.6);
     pointer-events: none;
 }
@@ -412,8 +432,12 @@ button {
     background: none;
     border: none;
     cursor: pointer;
-    transition: 0.2s all ease;
     padding: 0;
+}
+
+button,
+input[type="submit"] {
+    transition: 0.2s all ease;
 }
 
 #newProject {
@@ -426,12 +450,6 @@ button {
     font-weight: bold;
 }
 
-#newProject:hover {
-    background-color: var(--accent-color);
-    color: white;
-    fill: white;
-}
-
 #newProject.active {
     display: flex;
 }
@@ -439,11 +457,7 @@ button {
 .sidebar_item-btn {
     opacity: 0;
     transition: 0.1s opacity ease;
-    fill: black;
-}
-
-.sidebar_item:hover > .sidebar_item-btn {
-    opacity: 1;
+    fill: var(--accent-color);
 }
 
 .n-task_btn {
@@ -455,10 +469,22 @@ button {
     font-weight: 600;
     color: white;
     fill: white;
+    background-color: var(--accent-color);
+    border-radius: 6px;
+}
+
+.task-modal_submit {
+    cursor: pointer;
+    padding: 15px 10px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    background-color: hsl(0, 0%, 12%);
+    color: white;
 }
 
 .close-modal-btn {
-    fill: hsl(0, 97%, 56%);
+    fill: var(--red);
 }
 
 .task_details-btn {
@@ -489,9 +515,56 @@ button {
 }
 
 .danger-color {
-    color: hsl(0, 100%, 57%);
+    color: var(--red);
 }
 
 .resize-vertical {
     resize: vertical;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+
+
+
+/* ----- Queries ----- */
+@media (hover: hover) {
+    select:hover,
+    input[type="date"]:hover {
+        background-color: hsl(224, 100%, 98%);
+    }
+
+    .sidebar_item:not(.active):hover {
+        background-color: var(--sidebarHover);
+    }
+
+    .sidebar_item:hover > .sidebar_item-btn {
+        opacity: 1;
+    }
+
+    .sidebar_item.active:hover .sidebar_item-btn {
+        fill: white;
+    }
+
+    #newProject:hover {
+        background-color: var(--accent-color);
+        color: white;
+        fill: white;
+    }
+
+    input[type="checkbox"]:not(:checked):hover {
+        border-color: hsl(210, 7%, 40%);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='hsl(210, 7%, 75%)' d='m 10.164913,17.526668 -5.505259,-5.283825 1.7072418,-1.755566 3.7655972,3.5931 7.468802,-7.607045 1.739051,1.7231458 z'/%3E%3C/svg%3E");
+    }
+
+    .n-task_btn:hover,
+    .task-modal_submit:hover {
+        background-color: hsl(0, 0%, 27%);
+    }
+
+    .close-modal-btn:hover {
+        fill: hsl(0, 100%, 85%);
+    }
 }

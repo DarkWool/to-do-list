@@ -1,27 +1,41 @@
-const projects = [];
-const homeProject = project("Home");
-projects.push(homeProject);
+const projectsHandler = {
+    items: [],
+    projectIdCount: 0,
+    addProject: function (project) {
+        return this.items.push(project) - 1;
+    },
+    removeProject: function (index) {
+        return this.items.splice(index, 1);
+    },
+    getHighestId: function () {
+        this.projectIdCount = this.items.reduce((highest, curr) => {
+            return (curr.id > highest) ? curr.id : highest;
+        }, 0);
+    },
+    init: function () {
+        // Get the highest project's ID to continue from that value
+        this.projectIdCount = this.items.reduce((highest, curr) => {
+            return (curr.id > highest) ? curr.id : highest;
+        }, 0);
+    }
+};
 
-function project(title) {
-    const tasks = [];
-    const addTask = (task) => tasks.push(task) - 1;
-    const deleteTask = (taskIndex) => tasks.splice(taskIndex, 1);
-
+function project(id, title) {
     return {
-        title,
-        tasks,
-        addTask,
-        deleteTask
+        id,
+        title
     }
 }
 
 function createNewProject(title) {
-    const newProject = project(title);
-    return projects.push(newProject) - 1;
+    projectsHandler.projectIdCount++;
+    const newProject = project(projectsHandler.projectIdCount, title);
+    const newProjectIndex = projectsHandler.addProject(newProject);
+    return newProjectIndex;
 }
 
+
 export {
-    homeProject,
     createNewProject,
-    projects
+    projectsHandler
 };

@@ -1,2 +1,4 @@
 import "./style.css";
-import * as ui from "./modules/ui.js";
+import * as storage from "./modules/storage.js";
+
+storage.initStorage();
