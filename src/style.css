@@ -217,6 +217,7 @@ li {
 .workspace_title-input {
     border: none;
     padding: 0;
+    margin: 0;
 }
 
 .workspace_title.active {
@@ -333,6 +334,19 @@ input[type="checkbox"]:checked {
     font-weight: 600;
     font-size: 1.2rem;
     text-align: right;
+}
+
+.tasks_empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 500;
+}
+
+.tasks_empty-img {
+    max-width: 750px;
+    width: 100%;
+    height: auto;
 }
 
 

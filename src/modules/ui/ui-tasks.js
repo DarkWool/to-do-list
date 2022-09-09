@@ -4,6 +4,7 @@ import { projectsHandler } from "../projects.js";
 import { activeTab } from "./ui-projects.js";
 import { updateTasksStorage } from "../storage.js";
 import { darkOverlay } from "./ui-menu.js";
+import emptyMessageImage from "../../images/walking-outside.png";
 
 let tasksCount;
 const currTaskInfo = {
@@ -309,7 +310,16 @@ function renderTasks() {
 
 function renderNoTasksMessage() {
     const msgContainer = document.createElement("div");
+    const image = document.createElement("img");
+
+    msgContainer.classList.add("tasks_empty");
+    image.classList.add("tasks_empty-img");
+
+    image.src = emptyMessageImage;
+    image.alt = "A woman walking in the park";
     msgContainer.textContent = "You don't have any tasks, just relax!";
+
+    msgContainer.prepend(image);
 
     return msgContainer;
 }
