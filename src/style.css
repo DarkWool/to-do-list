@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
 *, *::before, *::after {
     box-sizing: border-box;
@@ -8,7 +8,7 @@
 :root {
     --secondary-color: hsl(214, 33%, 95%);
     --text-color: hsl(0, 0%, 8%);
-    --accent-color: hsl(0, 0%, 12%);
+    --accent-color: hsl(210, 18%, 11%);
     --blue: hsl(212, 100%, 48%);
     --yellow: hsl(41, 100%, 50%);
     --red: hsl(0, 100%, 57%);
@@ -31,7 +31,6 @@ body, button, input, select, textarea {
 }
 
 h1 {
-    margin-bottom: 25px;
     font-size: 4rem;
     font-weight: 800;
 }
@@ -55,6 +54,10 @@ select {
 select, input[type="date"] {
     cursor: pointer;
     transition: 0.2s background-color ease;
+}
+
+img {
+    display: block;
 }
 
 
@@ -82,13 +85,19 @@ li {
 }
 
 .sidebar {
-    --sidebarHover: hsl(214.3, 33.3%, 85%);
     display: grid;
     grid-template-rows: auto auto 1fr auto;
     padding: 35px;
     max-width: 325px;
     width: 100%;
     background-color: var(--secondary-color);
+}
+
+.sidebar_title {
+    display: flex;
+    margin-bottom: 25px;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .sidebar_top {
@@ -317,7 +326,7 @@ input[type="checkbox"]:checked {
     align-items: center;
     gap: 5px;
     transition: 0.1s opacity ease;
-    fill: hsl(240, 3%, 39%);
+    fill: hsl(210, 10%, 39%);
 }
 
 .task_date {
@@ -426,6 +435,24 @@ input[type="checkbox"]:checked {
 
 
 
+/* ----- Responsive menu ----- */
+.resp-menu {
+    display: none;
+    padding: 10px 50px;
+    font-weight: 600;
+    color: white;
+    fill: white;
+    background-color: var(--accent-color);
+}
+
+.resp-menu_btn {
+    width: 32px;
+    height: 32px;
+}
+
+
+
+
 /* ----- Buttons ----- */
 button {
     appearance: none;
@@ -479,7 +506,7 @@ input[type="submit"] {
     border: none;
     border-radius: 4px;
     font-weight: bold;
-    background-color: hsl(0, 0%, 12%);
+    background-color: var(--accent-color);
     color: white;
 }
 
@@ -526,6 +553,10 @@ input[type="submit"] {
     overflow: hidden;
 }
 
+.grow-effect {
+    transition: 0.1s transform ease;
+}
+
 
 
 
@@ -537,7 +568,7 @@ input[type="submit"] {
     }
 
     .sidebar_item:not(.active):hover {
-        background-color: var(--sidebarHover);
+        background-color: hsl(210, 33.3%, 85%);
     }
 
     .sidebar_item:hover > .sidebar_item-btn {
@@ -561,10 +592,198 @@ input[type="submit"] {
 
     .n-task_btn:hover,
     .task-modal_submit:hover {
-        background-color: hsl(0, 0%, 27%);
+        background-color: hsl(210, 15%, 25%);
+    }
+
+    .task_actions > button:hover {
+        fill: black;
     }
 
     .close-modal-btn:hover {
         fill: hsl(0, 100%, 85%);
+    }
+
+    .resp-menu_btn:hover {
+        fill: hsl(222.9, 4%, 65%);
+    }
+
+    .grow-effect:hover {
+        transform: scale(1.1);
+    }
+}
+
+@media screen and (max-width: 992px) {
+    body, button, input, select, textarea {
+        font-size: 1.4rem;
+    }
+
+    .sidebar {
+        position: absolute;
+        height: 100%;
+        transition: 0.2s transform ease;
+        z-index: 2;
+        transform: translateX(-100%);
+    }
+
+    .sidebar.active {
+        transform: translateX(0%);
+    }
+
+    .sidebar.active + .workspace {
+        transform: translateX(325px);
+    }
+
+    .workspace {
+        transition: 0.2s transform ease;
+    }
+
+    .resp-menu {
+        display: flex;
+        justify-content: end;
+        align-items: center;
+        padding: 10px 35px;
+    }
+
+    .workspace-container {
+        padding: 35px 35px 0 35px;
+    }
+
+    #tasks {
+        padding-bottom: 35px;
+    }
+
+    .dark-overlay.menu-active {
+        opacity: 1;
+        pointer-events: all;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    body, button, input, select, textarea {
+        font-size: 1.4rem;
+    }
+
+    .sidebar {
+        padding: 20px;
+        max-width: 280px;
+    }
+
+    .sidebar.active + .workspace {
+        transform: translateX(280px);
+    }
+
+    .sidebar_title {
+        margin-bottom: 20px;
+    }
+
+    h1 {
+        font-size: 3rem;
+    }
+
+    .sidebar_top {
+        margin-bottom: 35px;
+    }
+
+    .sidebar_subtitle {
+        margin-bottom: 10px;
+    }
+
+    .sidebar_item-btn {
+        opacity: 1;
+    }
+
+    .sidebar_item.active > .sidebar_item-btn {
+        fill: white;
+    }
+
+    .workspace_header-top {
+        margin-bottom: 10px;
+    }
+
+    .workspace-container {
+        padding: 15px 15px 0 15px;
+    }
+
+    .workspace_title,
+    .workspace_title-input {
+        font-size: 2.4rem;
+    }
+
+    .n-task_btn {
+        padding: 15px;
+    }
+
+    .n-task_btn > svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    #tasks {
+        padding-bottom: 15px;
+    }
+
+    .task {
+        grid-template-columns: auto 1fr auto;
+        grid-template-rows: auto auto;
+        gap: 3px 7px;
+        padding: 10px;
+    }
+
+    input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        margin: 0 5px;
+    }
+
+    .task_details {
+        grid-area: 3 / 2 / 4 / 4;
+        font-size: 1.2rem;
+        margin-top: 5px;
+    }
+
+    .task_date {
+        grid-area: 2 / 2 / 3 / 3;
+        gap: 0;
+        text-align: left;
+    }
+
+    .task:is(.low-priority, .medium-priority, .high-priority)::before {
+        width: 4px;
+    }
+
+    .resp-menu {
+        padding: 10px 15px;
+    }
+
+    .resp-menu_btn {
+        width: 28px;
+        height: 28px;
+    }
+
+    .task-modal {
+        max-width: 90%;
+        width: 450px;
+    }
+
+    .task-modal_header,
+    .task-modal_body {
+        padding: 15px;
+    }
+
+    .task-modal_header {
+        padding: 20px 15px;
+    }
+
+    .task-modal_title {
+        font-size: 1.6rem;
+    }
+
+    .task-modal_form {
+        gap: 15px;
+    }
+
+    .close-modal-btn > svg {
+        width: 20px;
+        height: 20px;
     }
 }

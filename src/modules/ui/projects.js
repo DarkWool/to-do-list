@@ -2,13 +2,13 @@ import { renderTasks } from "./tasks.js";
 import { createNewProject, projectsHandler } from "../projects.js";
 import { tasksHandler } from "../tasks.js";
 import { updateProjectsStorage, updateTasksStorage } from "../storage.js";
+import { sidebar } from "./menu.js";
 
 let activeTab = 0;  // Stores which project is currently selected by the user
 let sidebarProjectTitle;    // Stores the node of the selected project
 
 
 // DOM Cache
-const sidebar = document.getElementsByClassName("sidebar")[0];
 const sidebarItems = sidebar.getElementsByClassName("sidebar_item");
 const sidebarUserProjects = document.getElementsByClassName("sidebar_my-projects")[0];
 const newProjectBtn = document.getElementById("newProject");

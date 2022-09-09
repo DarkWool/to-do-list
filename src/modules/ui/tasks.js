@@ -3,6 +3,7 @@ import { tasksHandler, task } from "../tasks.js";
 import { projectsHandler } from "../projects.js";
 import { activeTab } from "./projects.js";
 import { updateTasksStorage } from "../storage.js";
+import { darkOverlay } from "./menu.js";
 
 let tasksCount;
 const currTaskInfo = {
@@ -21,7 +22,6 @@ const newTaskForm = document.getElementById("newTaskForm");
 const editTaskForm = document.getElementById("editTaskForm");
 const newTaskTitle = document.getElementById("f-nTaskTitle");
 const editTaskTitle = document.getElementById("f-eTaskTitle");
-const darkOverlay = document.getElementsByClassName("dark-overlay")[0];
 
 // Event Listeners
 newTaskBtn.addEventListener("click", () => openModal("new"));
@@ -370,5 +370,7 @@ function resetForm() {
 
 
 export {
-    renderTasks
+    renderTasks,
+    taskModal,
+    closeModal
 };
