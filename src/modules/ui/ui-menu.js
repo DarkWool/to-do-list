@@ -1,4 +1,4 @@
-import { taskModal, closeModal } from "./tasks.js";
+import { taskModal, closeModal } from "./ui-tasks.js";
 
 // Dom cache
 const menuBtn = document.getElementsByClassName("resp-menu_btn")[0];

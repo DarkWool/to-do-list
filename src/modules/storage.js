@@ -1,6 +1,6 @@
 import { tasksHandler, task } from "./tasks.js";
 import { projectsHandler } from "./projects.js";
-import { renderProjects } from "./ui/projects.js";
+import { renderProjects } from "./ui/ui-projects.js";
 
 function initStorage() {
     // Try to get data

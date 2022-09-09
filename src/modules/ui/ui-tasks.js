@@ -1,9 +1,9 @@
 import { format, isToday, isThisWeek, isValid } from "date-fns";
 import { tasksHandler, task } from "../tasks.js";
 import { projectsHandler } from "../projects.js";
-import { activeTab } from "./projects.js";
+import { activeTab } from "./ui-projects.js";
 import { updateTasksStorage } from "../storage.js";
-import { darkOverlay } from "./menu.js";
+import { darkOverlay } from "./ui-menu.js";
 
 let tasksCount;
 const currTaskInfo = {

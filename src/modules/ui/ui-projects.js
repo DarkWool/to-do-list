@@ -1,8 +1,8 @@
-import { renderTasks } from "./tasks.js";
+import { renderTasks } from "./ui-tasks.js";
 import { createNewProject, projectsHandler } from "../projects.js";
 import { tasksHandler } from "../tasks.js";
 import { updateProjectsStorage, updateTasksStorage } from "../storage.js";
-import { sidebar } from "./menu.js";
+import { sidebar } from "./ui-menu.js";
 
 let activeTab = 0;  // Stores which project is currently selected by the user
 let sidebarProjectTitle;    // Stores the node of the selected project
