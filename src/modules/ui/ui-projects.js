@@ -60,12 +60,12 @@ function createProjectUI(project, projectIndex) {
     
     projectTitle.textContent = project.title;
     projectIcon.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-    <path d="m3.3 15.4c.717 0 1.3.583 1.3 1.3s-.583 1.3-1.3 1.3-1.3-.583-1.3-1.3.583-1.3 1.3-1.3zm2.7
-    1.85c0-.414.336-.75.75-.75h14.5c.414 0 .75.336.75.75s-.336.75-.75.75h-14.5c-.414 0-.75-.336-.75-.75zm-2.7-6.55c.717
-    0 1.3.583 1.3 1.3s-.583 1.3-1.3 1.3-1.3-.583-1.3-1.3.583-1.3 1.3-1.3zm2.7 1.3c0-.414.336-.75.75-.75h14.5c.414
-    0 .75.336.75.75s-.336.75-.75.75h-14.5c-.414 0-.75-.336-.75-.75zm-2.7-6c.717 0 1.3.583 1.3 1.3s-.583 1.3-1.3
-    1.3-1.3-.583-1.3-1.3.583-1.3 1.3-1.3zm2.7.75c0-.414.336-.75.75-.75h14.5c.414 0 .75.336.75.75s-.336.75-.75.75h-14.5c-.414
-    0-.75-.336-.75-.75z" fill-rule="nonzero" /></svg>`;
+        <path d="m3.3 15.4c.717 0 1.3.583 1.3 1.3s-.583 1.3-1.3 1.3-1.3-.583-1.3-1.3.583-1.3 1.3-1.3zm2.7
+        1.85c0-.414.336-.75.75-.75h14.5c.414 0 .75.336.75.75s-.336.75-.75.75h-14.5c-.414 0-.75-.336-.75-.75zm-2.7-6.55c.717
+        0 1.3.583 1.3 1.3s-.583 1.3-1.3 1.3-1.3-.583-1.3-1.3.583-1.3 1.3-1.3zm2.7 1.3c0-.414.336-.75.75-.75h14.5c.414
+        0 .75.336.75.75s-.336.75-.75.75h-14.5c-.414 0-.75-.336-.75-.75zm-2.7-6c.717 0 1.3.583 1.3 1.3s-.583 1.3-1.3
+        1.3-1.3-.583-1.3-1.3.583-1.3 1.3-1.3zm2.7.75c0-.414.336-.75.75-.75h14.5c.414 0 .75.336.75.75s-.336.75-.75.75h-14.5c-.414
+        0-.75-.336-.75-.75z" fill-rule="nonzero" /></svg>`;
     deleteProjectBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z">
         </path></svg>`;
@@ -105,7 +105,6 @@ function changeProject(projectNode, projectIndex) {
         workspaceTitle.textContent = projectIndex;
         newTaskContainer.classList.remove("active");
     } else {
-        // activeTab = projectIndex;
         const project = projectsHandler.items[projectIndex];
         workspaceTitle.textContent = project.title;
         newTaskContainer.classList.add("active");
@@ -132,6 +131,7 @@ function updateProjectTitle() {
 
     const input = document.createElement("input");
     input.value = currProject.title;
+    input.type = "text";
     input.autocomplete = "off";
     input.classList.add("workspace_title-input");
 
