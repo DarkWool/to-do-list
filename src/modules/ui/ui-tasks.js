@@ -1,4 +1,4 @@
-import { format, isToday, isThisWeek, isValid, compareAsc, compareDesc } from "date-fns";
+import { format, isToday, isThisWeek, isValid, compareAsc, compareDesc, isPast } from "date-fns";
 import { tasksHandler, task } from "../tasks.js";
 import { projectsHandler } from "../projects.js";
 import { activeTab } from "./ui-projects.js";
@@ -135,6 +135,10 @@ function createTaskUI(task, taskIndex) {
         </path></svg>`;
 
     if (task.date !== null) {
+        if (isToday(task.date) === false && isPast(task.date)) {
+            taskDate.classList.add("overdue");
+        }
+
         taskDate.textContent = format(task.date, "E MMM dd, yyyy");
     } else {
         taskDate.textContent = "No Date";

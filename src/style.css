@@ -12,6 +12,7 @@
     --blue: hsl(212, 100%, 48%);
     --yellow: hsl(41, 100%, 50%);
     --red: hsl(0, 100%, 57%);
+    --red-text: hsl(0, 90%, 44%);
 }
 
 html {
@@ -336,6 +337,10 @@ input[type="checkbox"]:checked {
     text-align: right;
 }
 
+.task_date.overdue {
+    color: var(--red-text);
+}
+
 .tasks_empty {
     display: flex;
     flex-direction: column;
@@ -420,7 +425,7 @@ input[type="checkbox"]:checked {
 .invalid-input {
     display: none;
     font-size: 1.2rem;
-    color: hsl(0, 97%, 45%);
+    color: var(--red-text);
 }
 
 .invalid-input.active {
