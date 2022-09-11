@@ -432,6 +432,34 @@ input[type="checkbox"]:checked {
     display: block;
 }
 
+.select-indicator {
+    position: relative;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.select-indicator:is(.low, .medium, .high)::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    position: relative;
+    border-radius: 100%;
+    transition: 0.2s all ease;
+}
+
+.select-indicator.low::after {
+    background-color: var(--blue);
+}
+
+.select-indicator.medium::after {
+    background: var(--yellow);
+}
+
+.select-indicator.high::after {
+    background: var(--red);
+}
+
 
 
 

@@ -191,11 +191,11 @@
                     <div class="task-modal_w span-2-col">
                         <label for="f-nTaskDetails">Details (notes)</label>
                         <textarea name="f-nTaskDetails" id="f-nTaskDetails" class="resize-vertical" rows="10"
-                            placeholder="Important details of your task..."></textarea>
+                            placeholder="Important details of your task..." autocomplete="off"></textarea>
                     </div>
                     <div class="task-modal_w">
-                        <label for="f-nTaskPriority">Priority</label>
-                        <select name="f-nTaskPriority" id="f-nTaskPriority">
+                        <label for="f-nTaskPriority" class="select-indicator">Priority</label>
+                        <select name="f-nTaskPriority" id="f-nTaskPriority" class="task-modal_select" autocomplete="off">
                             <option value="none">None</option>
                             <option value="low">Low</option>
                             <option value="medium">Medium</option>
@@ -204,7 +204,7 @@
                     </div>
                     <div class="task-modal_w">
                         <label for="f-nTaskDate">Due date</label>
-                        <input name="f-nTaskDate" id="f-nTaskDate" type="date">
+                        <input name="f-nTaskDate" id="f-nTaskDate" type="date" autocomplete="off">
                     </div>
 
                     <input class="task-modal_submit span-2-col" type="submit" value="Create task">
@@ -223,11 +223,11 @@
                     <div class="task-modal_w span-2-col">
                         <label for="f-eTaskDetails">Details (notes)</label>
                         <textarea name="f-eTaskDetails" id="f-eTaskDetails" class="resize-vertical" rows="10"
-                            placeholder="Important details of your task..."></textarea>
+                            placeholder="Important details of your task..." autocomplete="off"></textarea>
                     </div>
                     <div class="task-modal_w">
-                        <label for="f-eTaskPriority">Priority</label>
-                        <select name="f-eTaskPriority" id="f-eTaskPriority">
+                        <label for="f-eTaskPriority" class="select-indicator">Priority</label>
+                        <select name="f-eTaskPriority" id="f-eTaskPriority" class="task-modal_select" autocomplete="off">
                             <option value="none">None</option>
                             <option value="low">Low</option>
                             <option value="medium">Medium</option>
@@ -236,7 +236,7 @@
                     </div>
                     <div class="task-modal_w">
                         <label for="f-eTaskDate">Due date</label>
-                        <input name="f-eTaskDate" id="f-eTaskDate" type="date">
+                        <input name="f-eTaskDate" id="f-eTaskDate" type="date" autocomplete="off">
                     </div>
 
                     <input class="task-modal_submit span-2-col" type="submit" value="Confirm edit">

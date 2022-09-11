@@ -24,6 +24,7 @@ const newTaskForm = document.getElementById("newTaskForm");
 const editTaskForm = document.getElementById("editTaskForm");
 const newTaskTitle = document.getElementById("f-nTaskTitle");
 const editTaskTitle = document.getElementById("f-eTaskTitle");
+const selectInputs = taskModal.getElementsByClassName("task-modal_select");
 
 // Event Listeners
 newTaskBtn.addEventListener("click", () => openModal("new"));
@@ -49,6 +50,10 @@ sortTasksBtn.addEventListener("click", (e) => {
 
     renderTasks();
 });
+
+for (let select of selectInputs) {
+    select.addEventListener("change", (e) => changeFormPriorityIndicator(e.target));
+}
 
 
 // Modal functions
@@ -255,6 +260,8 @@ function setEditFormValues() {
     formFields["f-eTaskDetails"].value = currTask.details;
     formFields["f-eTaskPriority"].value = currTask.priority;
 
+    changeFormPriorityIndicator(formFields["f-eTaskPriority"]);
+
     if (currTask.date !== null) {
         let date = format(currTask.date, "yyyy-MM-dd");
         formFields["f-eTaskDate"].value = date;
@@ -402,6 +409,27 @@ function hideInputError(input) {
     errorNode.classList.remove("active");
 }
 
+function changeFormPriorityIndicator(select) {
+    const label = select.previousElementSibling;
+    resetFormPriorityIndicator(label);
+    
+    switch (select.value) {
+        case "low":
+            label.classList.add("low");
+            break;
+        case "medium":
+            label.classList.add("medium");
+            break;
+        case "high":
+            label.classList.add("high");
+            break;
+    }
+}
+            
+function resetFormPriorityIndicator(label) {                
+    label.classList.remove("low", "medium", "high");
+}
+
 function validateFormData(input) {
     if (input.value === "") {
         showInputError(input);
@@ -416,6 +444,9 @@ function resetForm() {
         form.classList.remove("active");
         form.reset();
 
+        const selectIndicator = form.getElementsByClassName("select-indicator")[0];
+        if (selectIndicator != null) resetFormPriorityIndicator(selectIndicator);
+
         const invalidInputs = form.getElementsByClassName("invalid-input active");
         if (invalidInputs === null) return;
         for (let i = invalidInputs.length - 1; i >= 0; i--) {
@@ -423,6 +454,10 @@ function resetForm() {
         }
     }
 }
+
+
+newTaskForm.reset();
+editTaskForm.reset();
 
 
 export {
