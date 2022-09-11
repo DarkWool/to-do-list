@@ -1,4 +1,4 @@
-import { renderTasks } from "./ui-tasks.js";
+import { renderTasks, resetSortTasksBtn } from "./ui-tasks.js";
 import { createNewProject, projectsHandler } from "../projects.js";
 import { tasksHandler } from "../tasks.js";
 import { updateProjectsStorage, updateTasksStorage } from "../storage.js";
@@ -95,6 +95,7 @@ function deleteProject(index) {
 
 function changeProject(projectNode, projectIndex) {
     switchProjectTab(projectNode);
+    resetSortTasksBtn();
 
     activeTab = projectIndex;
     sidebarProjectTitle = projectNode.getElementsByClassName("flex-g")[0];

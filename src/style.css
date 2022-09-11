@@ -514,6 +514,19 @@ input[type="submit"] {
     border-radius: 6px;
 }
 
+.workspace_actions-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+.workspace_actions-btn > svg {
+    pointer-events: none;
+}
+
 .task-modal_submit {
     cursor: pointer;
     padding: 15px 10px;
@@ -607,6 +620,12 @@ input[type="submit"] {
     .n-task_btn:hover,
     .task-modal_submit:hover {
         background-color: hsl(210, 15%, 25%);
+    }
+
+    .workspace_actions-btn:hover {
+        background-color: var(--accent-color);
+        color: white;
+        fill: white;
     }
 
     .task_actions > button:hover {

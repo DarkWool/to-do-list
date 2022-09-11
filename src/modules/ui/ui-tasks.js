@@ -1,4 +1,4 @@
-import { format, isToday, isThisWeek, isValid } from "date-fns";
+import { format, isToday, isThisWeek, isValid, compareAsc, compareDesc } from "date-fns";
 import { tasksHandler, task } from "../tasks.js";
 import { projectsHandler } from "../projects.js";
 import { activeTab } from "./ui-projects.js";
@@ -15,6 +15,7 @@ const currTaskInfo = {
 // Dom cache
 const newTaskBtn = document.getElementsByClassName("n-task_btn")[0];
 const tasksContainer = document.getElementById("tasks");
+const sortTasksBtn = document.getElementsByClassName("workspace_actions-btn")[0];
 
 const taskModal = document.getElementsByClassName("task-modal")[0];
 const taskModalTitle = taskModal.getElementsByClassName("task-modal_title")[0];
@@ -32,6 +33,22 @@ darkOverlay.addEventListener("click", closeModal);
 modalCloseBtn.addEventListener("click", closeModal);
 newTaskTitle.addEventListener("blur", detectMissingInput);
 editTaskTitle.addEventListener("blur", detectMissingInput);
+sortTasksBtn.addEventListener("click", (e) => {
+    const button = e.target;
+
+    if (button.dataset.sort === "asc") {
+        button.dataset.sort = "desc";
+        button.innerHTML = `Sort<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 
+        21l6-8h-4v-10h-4v10h-4l6 8zm16-12h-8v-2h8v2zm2-6h-10v2h10v-2zm-4 8h-6v2h6v-2zm-2 4h-4v2h4v-2zm-2 4h-2v2h2v-2z" />
+        </svg>`;
+    } else {
+        button.dataset.sort = "asc";
+        button.innerHTML = `Sort<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3l-6 
+        8h4v10h4v-10h4l-6-8zm16 14h-8v-2h8v2zm2 2h-10v2h10v-2zm-4-8h-6v2h6v-2zm-2-4h-4v2h4v-2zm-2-4h-2v2h2v-2z"/></svg>`;
+    }
+
+    renderTasks();
+});
 
 
 // Modal functions
@@ -269,46 +286,71 @@ function editTask(e) {
     closeModal();
 }
 
+// Sort tasks (btn)
+function resetSortTasksBtn() {
+    sortTasksBtn.removeAttribute("data-sort");
+    sortTasksBtn.innerHTML = `Sort
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 10v4h4l-6 7-6-7h4v-4h-4l6-7 6 7h-4zm16
+        5h-10v2h10v-2zm0 6h-10v-2h10v2zm0-8h-10v-2h10v2zm0-4h-10v-2h10v2zm0-4h-10v-2h10v2z"/></svg>`;
+}
+
+// Helpers
 function renderTasks() {
     cleanTasksContainer();
 
     const fragment = document.createDocumentFragment();
-    switch (activeTab) {
-        case "Today":
-            tasksHandler.items.forEach((task, index) => {
-                if (isToday(task.date)) {
-                    const taskNode = createTaskUI(task, index);
-                    fragment.prepend(taskNode);
-                }
-            });
-            break;
-        case "This Week":
-            tasksHandler.items.forEach((task, index) => {
-                if (isThisWeek(task.date)) {
-                    const taskNode = createTaskUI(task, index);
-                    fragment.prepend(taskNode);
-                }
-            });
-            break;
-        default:
-            const id = projectsHandler.items[activeTab].id;
-            tasksHandler.items.forEach((task, index) => {
-                if (task.projectIndex === id) {
-                    const taskNode = createTaskUI(task, index);
-                    fragment.prepend(taskNode);
-                }
-            });
+    const sortMethod = sortTasksBtn.dataset.sort;
+    let filteredTasks = filterTasks();
+
+    if (sortMethod != undefined) {
+        filteredTasks = sortTasks(filteredTasks, sortMethod);
     }
+
+    filteredTasks.forEach((task) => {
+        const taskNode = createTaskUI(task, task.arrIndex);
+        fragment.prepend(taskNode);
+
+        delete task.arrIndex;
+    });
 
     tasksCount = fragment.children.length;
     if (tasksCount === 0) {
-        fragment.prepend(renderNoTasksMessage());
+        fragment.prepend(createNoTasksMessageUI());
     }
 
     tasksContainer.prepend(fragment);
 }
 
-function renderNoTasksMessage() {
+function filterTasks() {
+    switch (activeTab) {
+        case "Today":
+            return tasksHandler.items.filter((task, index) => {
+                task.arrIndex = index;
+                return isToday(task.date);
+            });
+        case "This Week":
+            return tasksHandler.items.filter((task, index) => {
+                task.arrIndex = index;
+                return isThisWeek(task.date);
+            });
+        default:
+            const id = projectsHandler.items[activeTab].id;
+            return tasksHandler.items.filter((task, index) => {
+                task.arrIndex = index;
+                return task.projectIndex === id;
+            });
+    }
+}
+
+function sortTasks(tasksArr, sortMethod) {
+    if (sortMethod === "asc") {
+        return tasksArr.sort((a, b) => compareAsc(a.date, b.date));
+    } else if (sortMethod === "desc") {
+        return tasksArr.sort((a, b) => compareDesc(a.date, b.date));
+    }
+}
+
+function createNoTasksMessageUI() {
     const msgContainer = document.createElement("div");
     const image = document.createElement("img");
 
@@ -382,5 +424,6 @@ function resetForm() {
 export {
     renderTasks,
     taskModal,
-    closeModal
+    closeModal,
+    resetSortTasksBtn,
 };
