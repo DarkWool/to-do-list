@@ -56,6 +56,7 @@
                 <h2 class="sidebar_subtitle">My Projects</h2>
                 <nav>
                     <ul class="sidebar_my-projects">
+
                     </ul>
                 </nav>
             </div>
@@ -84,11 +85,12 @@
 
         <section class="workspace">
             <div class="resp-menu">
-                <button class="resp-menu_btn icon-container">
-                    <svg viewBox="0 0 24 24">
-                        <path
-                            d="m22 16.75c0-.414-.336-.75-.75-.75h-18.5c-.414 0-.75.336-.75.75s.336.75.75.75h18.5c.414 0 .75-.336.75-.75zm0-5c0-.414-.336-.75-.75-.75h-18.5c-.414 0-.75.336-.75.75s.336.75.75.75h18.5c.414 0 .75-.336.75-.75zm0-5c0-.414-.336-.75-.75-.75h-18.5c-.414 0-.75.336-.75.75s.336.75.75.75h18.5c.414 0 .75-.336.75-.75z"
-                            fill-rule="nonzero"></path>
+                <button class="resp-menu_btn icon-container" aria-label="Toggle menu visibility">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="m22 16.75c0-.414-.336-.75-.75-.75h-18.5c-.414 0-.75.336-.75.75s.336.75.75.75h18.5c.414 
+                            0 .75-.336.75-.75zm0-5c0-.414-.336-.75-.75-.75h-18.5c-.414 0-.75.336-.75.75s.336.75.75.75h18.5c.414 
+                            0 .75-.336.75-.75zm0-5c0-.414-.336-.75-.75-.75h-18.5c-.414 0-.75.336-.75.75s.336.75.75.75h18.5c.414 
+                            0 .75-.336.75-.75z" fill-rule="nonzero"></path>
                     </svg>
                 </button>
             </div>
@@ -99,7 +101,8 @@
                 <div class="workspace_header">
                     <div class="workspace_header-top">
                         <h3 class="workspace_title flex-g active">Home</h3>
-                        <button type="button" class="workspace_actions-btn" aria-label="Sort tasks by date" title="Sort tasks by date">
+                        <button type="button" class="workspace_actions-btn" aria-label="Sort tasks by date"
+                            title="Sort tasks by date">
                             Sort
                         </button>
                     </div>
@@ -112,57 +115,11 @@
                             Add new task
                         </button>
                     </div>
-
-                    <!-- <hr style="margin: 15px 0 0 0;/*! color: #cdd7e5; *//*! background-color: #cdd7e5; */border: 1px solid #cdd7e5;"> -->
                 </div>
 
                 <!-- Project content -->
                 <div id="tasks">
-                    <div class="task low-priority">
-                        <input type="checkbox">
 
-                        <div class="task_title">
-                            <p>[Fix] Corregir cualquier problema de proporción que pueda tener el modelado del arma.</p>
-                            <button type="button">
-                                <svg width="20" height="20" viewBox="0 0 24 24">
-                                    <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"></path>
-                                </svg>
-                            </button>
-                        </div>
-
-                        <div class="task_details">
-                            <p>
-                                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Recusandae doloremque esse
-                                officiis, quis possimus quaerat,
-                                enim animi sed ea aliquid illum voluptatibus cumque asperiores blanditiis provident nisi
-                                et natus in.Explicabo quis enim
-                                cum inventore aperiam illum nisi corrupti esse perferendis quia vitae quibusdam id,
-                                ducimus itaque! Veniam, ab assumenda
-                                ullam, sed eum pariatur vitae similique magnam vel ipsam sequi?
-                            </p>
-                        </div>
-
-                        <div class="task_actions">
-                            <button class="icon-container" type="button" data-task-action="edit">
-                                <svg width="20" height="20" viewBox="0 0 24 24">
-                                    <path
-                                        d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z">
-                                    </path>
-                                </svg>
-                            </button>
-                            <button class="icon-container" type="button" data-task-action="delete">
-                                <svg width="20" height="20" viewBox="0 0 24 24">
-                                    <path
-                                        d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-
-                        <div class="task_date">
-                            July 18th, 2022
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
@@ -172,74 +129,84 @@
                 <span class="task-modal_title"></span>
                 <button type="button" class="close-modal-btn icon-container" aria-label="Close modal">
                     <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-                        <path
-                            d="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z" />
+                        <path d="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,
+                            2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,
+                            12L17,8.41L15.59,7Z" />
                     </svg>
                 </button>
             </div>
+
             <div class="task-modal_body">
-                <form id="newTaskForm" class="task-modal_form" novalidate>
+                <form id="newTaskForm" class="task-modal_form" spellcheck="false" novalidate>
                     <div class="task-modal_w span-2-col">
                         <label for="f-nTaskTitle">
                             Title<span class="danger-color">*</span>
                         </label>
-                        <input name="f-nTaskTitle" id="f-nTaskTitle" type="text" required>
+                        <input type="text" name="f-nTaskTitle" id="f-nTaskTitle" required>
                         <span class="invalid-input">
                             Task must include a title.
                         </span>
                     </div>
+
                     <div class="task-modal_w span-2-col">
                         <label for="f-nTaskDetails">Details (notes)</label>
                         <textarea name="f-nTaskDetails" id="f-nTaskDetails" class="resize-vertical" rows="10"
                             placeholder="Important details of your task..." autocomplete="off"></textarea>
                     </div>
+
                     <div class="task-modal_w">
                         <label for="f-nTaskPriority" class="select-indicator">Priority</label>
-                        <select name="f-nTaskPriority" id="f-nTaskPriority" class="task-modal_select" autocomplete="off">
+                        <select name="f-nTaskPriority" id="f-nTaskPriority" class="task-modal_select"
+                            autocomplete="off">
                             <option value="none">None</option>
                             <option value="low">Low</option>
                             <option value="medium">Medium</option>
                             <option value="high">High</option>
                         </select>
                     </div>
+
                     <div class="task-modal_w">
                         <label for="f-nTaskDate">Due date</label>
-                        <input name="f-nTaskDate" id="f-nTaskDate" type="date" autocomplete="off">
+                        <input type="date" name="f-nTaskDate" id="f-nTaskDate" autocomplete="off">
                     </div>
 
-                    <input class="task-modal_submit span-2-col" type="submit" value="Create task">
+                    <input type="submit" class="task-modal_submit span-2-col" value="Create task">
                 </form>
 
-                <form id="editTaskForm" class="task-modal_form" novalidate>
+                <form id="editTaskForm" class="task-modal_form" spellcheck="false" novalidate>
                     <div class="task-modal_w span-2-col">
                         <label for="f-eTaskTitle">
                             Title<span class="danger-color">*</span>
                         </label>
-                        <input name="f-eTaskTitle" id="f-eTaskTitle" type="text" required>
+                        <input type="text" name="f-eTaskTitle" id="f-eTaskTitle" required>
                         <span class="invalid-input">
                             Task must include a title.
                         </span>
                     </div>
+
                     <div class="task-modal_w span-2-col">
                         <label for="f-eTaskDetails">Details (notes)</label>
                         <textarea name="f-eTaskDetails" id="f-eTaskDetails" class="resize-vertical" rows="10"
                             placeholder="Important details of your task..." autocomplete="off"></textarea>
                     </div>
+
                     <div class="task-modal_w">
                         <label for="f-eTaskPriority" class="select-indicator">Priority</label>
-                        <select name="f-eTaskPriority" id="f-eTaskPriority" class="task-modal_select" autocomplete="off">
+                        <select name="f-eTaskPriority" id="f-eTaskPriority" class="task-modal_select"
+                            autocomplete="off">
                             <option value="none">None</option>
                             <option value="low">Low</option>
                             <option value="medium">Medium</option>
                             <option value="high">High</option>
                         </select>
                     </div>
+
                     <div class="task-modal_w">
                         <label for="f-eTaskDate">Due date</label>
-                        <input name="f-eTaskDate" id="f-eTaskDate" type="date" autocomplete="off">
+                        <input type="date" name="f-eTaskDate" id="f-eTaskDate" autocomplete="off">
                     </div>
 
-                    <input class="task-modal_submit span-2-col" type="submit" value="Confirm edit">
+                    <input type="submit" class="task-modal_submit span-2-col" value="Confirm edit">
                 </form>
             </div>
         </div>
