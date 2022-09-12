@@ -7,7 +7,7 @@
 
 :root {
     --secondary-color: hsl(214, 33%, 95%);
-    --text-color: hsl(0, 0%, 8%);
+    --text-color: hsl(0, 0%, 5%);
     --accent-color: hsl(210, 18%, 11%);
     --blue: hsl(212, 100%, 48%);
     --yellow: hsl(41, 100%, 50%);
@@ -29,6 +29,7 @@ body, button, input, select, textarea {
     font-family: Inter;
     font-size: 1.6rem;
     color: var(--text-color);
+    text-rendering: optimizeLegibility;
 }
 
 h1 {
@@ -46,10 +47,6 @@ input, textarea {
     appearance: none;
     width: 100%;
     border: 1px solid hsl(216, 14%, 75%);
-}
-
-textarea {
-    font-size: 1.4rem;
 }
 
 select {
@@ -266,7 +263,7 @@ li {
 
 .workspace_subtitle {
     font-size: 1.8rem;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     font-weight: bold;
 }
 
@@ -285,7 +282,7 @@ li {
     grid-auto-rows: auto;
     align-items: center;
     gap: 5px 15px;
-    padding: 15px;
+    padding: 13px 15px;
     background-color: var(--secondary-color);
     border-radius: 6px;
     margin-top: 6px;
@@ -572,7 +569,7 @@ input[type="submit"] {
     display: flex;
     align-items: center;
     gap: 15px;
-    padding: 15px 20px;
+    padding: 15px;
     font-weight: 600;
     color: white;
     fill: white;
@@ -826,7 +823,7 @@ input[type="submit"] {
     }
 
     .n-task_btn {
-        padding: 15px;
+        padding: 12px;
     }
 
     .n-task_btn > svg {
