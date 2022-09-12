@@ -22,13 +22,13 @@ const tasksHandler = {
 }
 
 // Factory function to create new tasks
-function task(title, details, date, priority, projectIndex) {    
+function task(title, details, date, priority, projectIndex, completed = false) {    
     return {
         title,
         details,
         date,
         priority,
-        completed: false,
+        completed,
         projectIndex,
     }
 }

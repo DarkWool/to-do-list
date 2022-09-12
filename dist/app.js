@@ -66,13 +66,13 @@ const tasksHandler = {
 }
 
 // Factory function to create new tasks
-function task(title, details, date, priority, projectIndex) {    
+function task(title, details, date, priority, projectIndex, completed = false) {    
     return {
         title,
         details,
         date,
         priority,
-        completed: false,
+        completed,
         projectIndex,
     }
 }
@@ -3689,55 +3689,69 @@ function initStorage() {
                 title: "Home",
             },
             {
-                id: 5,
-                title: "Thompson M1A1",
+                id: 1,
+                title: "Demo Project",
             }
         ]
         const testTasksData = [
-            task("Terminar modelado",
-                "asdasdadsadsa",
-                new Date("2022-07-24 00:00"),
-                "high",
+            task("You can edit this task and delete it!",
+                "",
+                new Date("2022-09-17 00:00"),
+                "none",
                 0,
             ),
-            task("Terminar modelado - 1",
-                `Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptatum expedita at excepturi recusandae labore possimus unde dolorum molestias eligendi odit quibusdam doloremque repudiandae quia earum illum ullam maiores, asperiores pariatur. Sed, saepe ? Facere iure fugiat dolore magni, assumenda ullam dolorum, officiis accusantium dignissimos itaque beatae sed ratione saepe a, non molestias reprehenderit laborum error ? Aperiam neque magni in ea tempore. Eum laudantium maiores, id aperiam, dolore quam, facilis incidunt exercitationem labore dolorem sed non laborum repellendus ab distinctio maxime et vero enim ? Ex, rem hic voluptatum ad quisquam architecto nobis. Ex rerum porro error dolore, doloribus consequuntur, facilis quam quos iure ad tempora labore id explicabo laborum debitis ratione voluptate, nobis eos vero obcaecati quod distinctio eveniet provident.Nihil, doloremque ? 
-            Aspernatur reiciendis aliquid rerum aliquam quas! Autem quod mollitia dicta placeat eveniet unde, consequuntur quis repellendus labore saepe cum laudantium dignissimos illo voluptate veritatis quo magnam ut sapiente porro nesciunt.`,
-                new Date("2022-09-01 00:00"),
-                "none",
+            task("Set priorities for each one of your tasks",
+                `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu tortor mi. Proin in sapien vehicula, 
+                feugiat nunc sit amet, cursus velit. Integer ut nisi semper, fringilla elit ac, rutrum turpis. Vestibulum 
+                lacinia efficitur arcu, vitae pharetra urna sagittis nec. Praesent sodales ornare tortor, at lacinia augue 
+                condimentum et. Duis ut rutrum odio. Maecenas ac tincidunt magna, at finibus est. Donec eu massa id risus 
+                gravida feugiat. Curabitur tincidunt turpis ut nunc facilisis sagittis.
+                Etiam ultrices ultrices erat, vitae porttitor risus posuere quis. Pellentesque a metus posuere, fringilla
+                eros ac, sagittis neque. Vivamus pretium semper arcu. Sed nisi velit, consectetur viverra feugiat vel,
+                dapibus et lacus. Praesent eget tempus dolor. Duis lacinia tristique augue, eu pharetra sapien mattis id.
+                Suspendisse faucibus lectus eros, eget dapibus purus lacinia sit amet. Pellentesque eleifend pulvinar imperdiet.`,
+                new Date("2022-09-13 00:00"),
+                "high",
                 0
             ),
-            task("Terminar modelado - 2",
-                "asdasdadsadsa",
-                new Date("2022-07-11 00:00"),
+            task("Push the project to Github",
+                "Don't forget that you have to do it before this week ends!",
+                new Date("2022-09-13 00:00"),
                 "medium",
                 0
             ),
-            task("Terminar modelado - 3",
+            task("Do some exercise",
                 null,
-                new Date("2022-08-08 00:00"),
-                "high",
-                0
+                null,
+                "low",
+                0,
+                true
             ),
-            task("Terminar modelado - today",
-                "asdasdadsadsa",
-                new Date("2022-09-06 00:00"),
+            task("Take meds",
+                "Example med",
+                new Date("2022-09-12 00:00"),
                 "none",
                 0
             ),
             task(
-                "You can edit this task and delete it!",
-                "asdasdadsadsa",
-                new Date("2022-07-24 00:00"),
-                "none",
-                5,
+                "You can create your own projects to organize the tasks",
+                "Try it by clicking on the button to your bottom left corner '+ New Project'",
+                new Date("2023-09-20 00:00"),
+                "low",
+                1,
             ),
-            task("21112",
-                `Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptatum expedita at excepturi recusandae labore possimus unde dolorum molestias eligendi odit quibusdam doloremque repudiandae quia earum illum ullam maiores, asperiores pariatur. Sed, saepe ? Facere iure fugiat dolore magni, assumenda ullam dolorum, officiis accusantium dignissimos itaque beatae sed ratione saepe a, non molestias reprehenderit laborum error ? Aperiam neque magni in ea tempore. Eum laudantium maiores, id aperiam, dolore quam, facilis incidunt exercitationem labore dolorem sed non laborum repellendus ab distinctio maxime et vero enim ? Ex, rem hic voluptatum ad quisquam architecto nobis. Ex rerum porro error dolore, doloribus consequuntur, facilis quam quos iure ad tempora labore id explicabo laborum debitis ratione voluptate, nobis eos vero obcaecati quod distinctio eveniet provident.Nihil, doloremque ? 
-            Aspernatur reiciendis aliquid rerum aliquam quas! Autem quod mollitia dicta placeat eveniet unde, consequuntur quis repellendus labore saepe cum laudantium dignissimos illo voluptate veritatis quo magnam ut sapiente porro nesciunt.`,
+            task("Demo task 2",
+                `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu tortor mi. Proin in sapien vehicula, 
+                feugiat nunc sit amet, cursus velit. Integer ut nisi semper, fringilla elit ac, rutrum turpis. Vestibulum 
+                lacinia efficitur arcu, vitae pharetra urna sagittis nec. Praesent sodales ornare tortor, at lacinia augue 
+                condimentum et. Duis ut rutrum odio. Maecenas ac tincidunt magna, at finibus est. Donec eu massa id risus 
+                gravida feugiat. Curabitur tincidunt turpis ut nunc facilisis sagittis.
+                Etiam ultrices ultrices erat, vitae porttitor risus posuere quis. Pellentesque a metus posuere, fringilla
+                eros ac, sagittis neque. Vivamus pretium semper arcu. Sed nisi velit, consectetur viverra feugiat vel,
+                dapibus et lacus. Praesent eget tempus dolor. Duis lacinia tristique augue, eu pharetra sapien mattis id.`,
                 new Date("2022-09-04 00:00"),
-                "high",
-                5
+                "none",
+                1
             ),
         ];
 
