@@ -48,6 +48,10 @@ input, textarea {
     border: 1px solid hsl(216, 14%, 75%);
 }
 
+textarea {
+    font-size: 1.4rem;
+}
+
 select {
     background-color: white;
 }
@@ -70,6 +74,24 @@ img {
     grid-template-columns: 325px 1fr;
     height: 100%;
     overflow: hidden;
+}
+
+
+
+
+/* ----- Scrollbar styles (webkit) ----- */
+:is(#tasks, .sidebar_my-projects)::-webkit-scrollbar {
+    width: 4px;
+}
+
+:is(#tasks, .sidebar_my-projects)::-webkit-scrollbar-thumb {
+    background-color: hsl(210, 18%, 40%);
+    border-radius: 6px;
+}
+
+:is(#tasks, .sidebar_my-projects)::-webkit-scrollbar-track {
+    background-color: hsl(210, 18%, 80%);
+    border-radius: 6px;
 }
 
 
@@ -111,7 +133,7 @@ li {
 }
 
 .sidebar_my-projects {
-    overflow-y: scroll;
+    overflow-y: auto;
     height: 100%;
 }
 
@@ -150,6 +172,7 @@ li {
 .sidebar_icon {
     width: 20px;
     height: 20px;
+    flex-shrink: 0;
 }
 
 .n-project_form {
@@ -241,7 +264,7 @@ li {
 /* ----- Tasks ----- */
 #tasks {
     height: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding-bottom: 50px;
 }
 
@@ -366,9 +389,8 @@ input[type="checkbox"]:checked {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 2;
-    overflow: hidden;
-    border-radius: 6px;
     opacity: 0;
+    box-shadow: hsl(0deg 0% 0% / 15%) 0px 2px 20px 0px;
     transition: 0.2s all ease;
 }
 
@@ -384,18 +406,19 @@ input[type="checkbox"]:checked {
     align-items: center;
     font-weight: bold;
     font-size: 1.8rem;
-    background-color: hsl(0, 0%, 5%);
+    border-radius: 6px 6px 0 0;
     background-color: var(--accent-color);
     color: white;
 }
 
 .task-modal_header,
 .task-modal_body {
-    padding: 25px;
+    padding: 30px 25px;
 }
 
 .task-modal_body {
     background-color: white;
+    border-radius: 0 0 6px 6px;
 }
 
 .task-modal_form {
@@ -470,7 +493,7 @@ input[type="checkbox"]:checked {
     height: 100%;
     opacity: 0;
     transition: 0.2s opacity ease;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: hsla(0, 0%, 0%, 0.6);
     pointer-events: none;
 }
 
@@ -588,6 +611,15 @@ input[type="submit"] {
 
 
 
+/* ----- Selection ----- */
+::selection {
+    background-color: hsla(212, 100%, 23%, 0.83);
+    color: white;
+}
+
+
+
+
 /* ----- Utilities ----- */
 .flex-g {
     flex-grow: 1;
@@ -659,6 +691,14 @@ input[type="submit"] {
         background-color: var(--accent-color);
         color: white;
         fill: white;
+    }
+
+    .task_details-btn:hover {
+        transform: translateY(2px);
+    }
+
+    .task_details-btn.rotate:hover {
+        transform: rotate(-180deg) translateY(2px);
     }
 
     .task_actions > button:hover {
