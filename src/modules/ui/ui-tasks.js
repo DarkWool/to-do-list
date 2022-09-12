@@ -103,17 +103,22 @@ function getNewTaskData(e) {
     closeModal();
 }
 
-function composeNewTask(title, details, date, priority) {
-    // If this is the first task of the project then clean the 'no tasks' message
-    if (uncompletedTaskCount === 0) cleanUncompletedTasksContainer();
-    
+function composeNewTask(title, details, date, priority) {    
     const projectId = projectsHandler.items[activeTab].id;
     const newTask = task(title, details, date, priority, projectId);
     const newTaskIndex = tasksHandler.addTask(newTask);
-
     updateTasksStorage();
-    tasksContainer.prepend(createTaskUI(newTask, newTaskIndex));
+
+    // If this is the first task of the project then clean the 'no tasks' message
+    if (uncompletedTaskCount === 0) cleanUncompletedTasksContainer();
     uncompletedTaskCount++;
+
+    // If the user selected a sort order then re-render the tasks to put the new one in the correct place
+    if (sortTasksBtn.dataset.sort === "asc" || sortTasksBtn.dataset.sort === "desc") {
+        return renderTasks();
+    }
+
+    tasksContainer.prepend(createTaskUI(newTask, newTaskIndex));
 }
 
 function createTaskUI(task, taskIndex) {
