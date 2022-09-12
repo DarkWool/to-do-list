@@ -370,10 +370,19 @@ function filterTasks() {
 }
 
 function sortTasks(tasksArr, sortMethod) {
+    const pastDate = new Date(-1, 0, 1, 0, 0, 1);
     if (sortMethod === "asc") {
-        return tasksArr.sort((a, b) => compareAsc(a.date, b.date));
+        return tasksArr.sort((a, b) => {
+            let dateA = (a.date) ? a.date : pastDate;
+            let dateB = (b.date) ? b.date : pastDate;
+            return compareAsc(dateA, dateB);
+        });
     } else if (sortMethod === "desc") {
-        return tasksArr.sort((a, b) => compareDesc(a.date, b.date));
+        return tasksArr.sort((a, b) => {
+            let dateA = (a.date) ? a.date : pastDate;
+            let dateB = (b.date) ? b.date : pastDate;
+            return compareDesc(dateA, dateB);
+        });
     }
 }
 
