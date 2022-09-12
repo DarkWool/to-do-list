@@ -10,7 +10,8 @@ const tasksHandler = {
         this.items = this.items.filter((task) => task.projectIndex !== id);
     },
     toggleCompletedState: function (index) {
-        this.items[index].completed = (this.items[index].completed) ? false : true;  
+        this.items[index].completed = (this.items[index].completed) ? false : true;
+        return this.items[index].completed;
     },
     init: function () {
         // Parse each task date from string to Date object

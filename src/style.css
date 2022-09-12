@@ -258,14 +258,24 @@ li {
     display: block;
 }
 
+.workspace_content {
+    height: 100%;
+    overflow-y: auto;
+    padding-bottom: 50px;
+}
+
+.workspace_subtitle {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
 
 
 
 /* ----- Tasks ----- */
 #tasks {
-    height: 100%;
-    overflow-y: auto;
-    padding-bottom: 50px;
+    padding-bottom: 30px;
 }
 
 .task {
@@ -368,11 +378,11 @@ input[type="checkbox"]:checked {
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .tasks_empty-img {
-    max-width: 750px;
+    max-width: 650px;
     width: 100%;
     height: auto;
 }
@@ -754,7 +764,7 @@ input[type="submit"] {
         padding: 35px 35px 0 35px;
     }
 
-    #tasks {
+    .workspace_content {
         padding-bottom: 35px;
     }
 
@@ -824,7 +834,7 @@ input[type="submit"] {
         height: 14px;
     }
 
-    #tasks {
+    .workspace_content {
         padding-bottom: 15px;
     }
 

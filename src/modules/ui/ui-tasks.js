@@ -6,7 +6,7 @@ import { updateTasksStorage } from "../storage.js";
 import { darkOverlay } from "./ui-menu.js";
 import emptyMessageImage from "../../images/walking-outside.png";
 
-let tasksCount;
+let uncompletedTaskCount;
 const currTaskInfo = {
     index: null,
 };
@@ -15,6 +15,7 @@ const currTaskInfo = {
 // Dom cache
 const newTaskBtn = document.getElementsByClassName("n-task_btn")[0];
 const tasksContainer = document.getElementById("tasks");
+const completedTasksContainer = document.getElementById("completedTasks");
 const sortTasksBtn = document.getElementsByClassName("workspace_actions-btn")[0];
 
 const taskModal = document.getElementsByClassName("task-modal")[0];
@@ -104,7 +105,7 @@ function getNewTaskData(e) {
 
 function composeNewTask(title, details, date, priority) {
     // If this is the first task of the project then clean the 'no tasks' message
-    if (tasksCount === 0) cleanTasksContainer();
+    if (uncompletedTaskCount === 0) cleanUncompletedTasksContainer();
     
     const projectId = projectsHandler.items[activeTab].id;
     const newTask = task(title, details, date, priority, projectId);
@@ -112,7 +113,7 @@ function composeNewTask(title, details, date, priority) {
 
     updateTasksStorage();
     tasksContainer.prepend(createTaskUI(newTask, newTaskIndex));
-    tasksCount++;
+    uncompletedTaskCount++;
 }
 
 function createTaskUI(task, taskIndex) {
@@ -233,8 +234,18 @@ function markTaskCompletedUI(target, taskIndex) {
     const taskNode = target.closest("div.task");
     taskNode.classList.toggle("completed");
 
-    tasksHandler.toggleCompletedState(taskIndex);
+    const completedState = tasksHandler.toggleCompletedState(taskIndex);
     updateTasksStorage();
+
+    if (completedState === true) {
+        uncompletedTaskCount--;
+        completedTasksContainer.prepend(taskNode);
+    } else {
+        uncompletedTaskCount++;
+        renderTasks();
+    }
+    
+    renderNoTasksMessage();
 }
 
 function showTaskDetails(e) {
@@ -306,9 +317,10 @@ function editTask(e) {
 
 // Helpers
 function renderTasks() {
-    cleanTasksContainer();
+    cleanTasksContainers();
 
-    const fragment = document.createDocumentFragment();
+    const uncompletedFragment = document.createDocumentFragment();
+    const completedFragment = document.createDocumentFragment();
     const sortMethod = sortTasksBtn.dataset.sort;
     let filteredTasks = filterTasks();
 
@@ -318,17 +330,22 @@ function renderTasks() {
 
     filteredTasks.forEach((task) => {
         const taskNode = createTaskUI(task, task.arrIndex);
-        fragment.prepend(taskNode);
+
+        if (task.completed === true) completedFragment.prepend(taskNode);
+        else uncompletedFragment.prepend(taskNode);
 
         delete task.arrIndex;
     });
 
-    tasksCount = fragment.children.length;
-    if (tasksCount === 0) {
-        fragment.prepend(createNoTasksMessageUI());
+    completedTasksContainer.prepend(completedFragment);
+    
+    // If there are no uncompleted tasks, render a special message
+    uncompletedTaskCount = uncompletedFragment.children.length;
+    if (renderNoTasksMessage() === true) {
+        return;
+    } else {
+        tasksContainer.prepend(uncompletedFragment);
     }
-
-    tasksContainer.prepend(fragment);
 }
 
 function filterTasks() {
@@ -362,6 +379,7 @@ function sortTasks(tasksArr, sortMethod) {
 
 function createNoTasksMessageUI() {
     const msgContainer = document.createElement("div");
+    const message = document.createElement("p");
     const image = document.createElement("img");
 
     msgContainer.classList.add("tasks_empty");
@@ -369,15 +387,30 @@ function createNoTasksMessageUI() {
 
     image.src = emptyMessageImage;
     image.alt = "A woman walking in the park";
-    msgContainer.textContent = "You don't have any tasks, just relax!";
+    message.textContent = "You don't have any tasks, just relax!";
 
-    msgContainer.prepend(image);
+    msgContainer.prepend(image, message);
 
     return msgContainer;
 }
 
-function cleanTasksContainer() {
+function renderNoTasksMessage() {
+    if (uncompletedTaskCount === 0) {
+        const message = createNoTasksMessageUI();
+        tasksContainer.prepend(message);
+        return true;
+    }
+
+    return false;
+}
+
+function cleanUncompletedTasksContainer() {
     tasksContainer.innerHTML = "";
+}
+
+function cleanTasksContainers() {
+    tasksContainer.innerHTML = "";
+    completedTasksContainer.innerHTML = "";
 }
 
 
@@ -434,7 +467,7 @@ function changeFormPriorityIndicator(select) {
     }
 }
             
-function resetFormPriorityIndicator(label) {                
+function resetFormPriorityIndicator(label) {
     label.classList.remove("low", "medium", "high");
 }
 
