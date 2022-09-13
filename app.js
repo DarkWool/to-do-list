@@ -89,11 +89,6 @@ const projectsHandler = {
     removeProject: function (index) {
         return this.items.splice(index, 1);
     },
-    getHighestId: function () {
-        this.projectIdCount = this.items.reduce((highest, curr) => {
-            return (curr.id > highest) ? curr.id : highest;
-        }, 0);
-    },
     init: function () {
         // Get the highest project's ID to continue from that value
         this.projectIdCount = this.items.reduce((highest, curr) => {
